@@ -1,0 +1,79 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:WMS.ViewModels.Pages"
+             x:Class="WMS.Views.Pages.DashboardPageView"
+             x:DataType="vm:DashboardPageViewModel"
+             x:CompileBindings="False">
+
+    <ScrollViewer Padding="32,28">
+        <StackPanel Spacing="24">
+
+            <!-- Header -->
+            <StackPanel Spacing="4">
+                <TextBlock Text="Pulpit" FontSize="28" FontWeight="SemiBold"/>
+                <TextBlock Text="Przegląd operacji magazynowych" Opacity="0.55" FontSize="14"/>
+            </StackPanel>
+
+            <!-- Stat Cards -->
+            <Grid ColumnDefinitions="*,*,*,*">
+                <Border Grid.Column="0" Margin="0,0,12,0" Padding="20,18" CornerRadius="10"
+                        Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="Produkty" FontSize="13" Opacity="0.6"/>
+                        <TextBlock Text="{Binding TotalProducts}" FontSize="30" FontWeight="Bold"/>
+                        <TextBlock Text="indeksy magazynowe" FontSize="12" Opacity="0.5"/>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="1" Margin="0,0,12,0" Padding="20,18" CornerRadius="10"
+                        Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="Otwarte zamówienia" FontSize="13" Opacity="0.6"/>
+                        <TextBlock Text="{Binding OpenOrders}" FontSize="30" FontWeight="Bold"/>
+                        <TextBlock Text="ZS + ZZ do realizacji" FontSize="12" Opacity="0.5"/>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="2" Margin="0,0,12,0" Padding="20,18" CornerRadius="10"
+                        Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="Kontrahenci" FontSize="13" Opacity="0.6"/>
+                        <TextBlock Text="{Binding TotalCustomers}" FontSize="30" FontWeight="Bold"/>
+                        <TextBlock Text="aktywni odbiorcy i dostawcy" FontSize="12" Opacity="0.5"/>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="3" Padding="20,18" CornerRadius="10"
+                        Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="Niski stan" FontSize="13" Opacity="0.6"/>
+                        <TextBlock Text="{Binding LowStockItems}" FontSize="30" FontWeight="Bold" Foreground="#E05252"/>
+                        <TextBlock Text="indeksów wymaga uzupełnienia" FontSize="12" Opacity="0.5"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Recent Activity -->
+            <StackPanel Spacing="12">
+                <TextBlock Text="Ostatnia aktywność" FontSize="18" FontWeight="SemiBold"/>
+                <Border CornerRadius="10"
+                        Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                    <ItemsControl ItemsSource="{Binding RecentActivity}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Padding="20,14"
+                                        BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                                        BorderThickness="0,0,0,1">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBlock Text="{Binding Text}" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding Time}" Opacity="0.5" FontSize="12"
+                                                   VerticalAlignment="Center" Margin="16,0,0,0"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Border>
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+
+</UserControl>

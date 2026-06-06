@@ -1,0 +1,66 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:WMS.ViewModels.Pages"
+             xmlns:m="using:WMS.Models"
+             x:Class="WMS.Views.Pages.OrdersPageView"
+             x:DataType="vm:OrdersPageViewModel"
+             x:CompileBindings="False">
+
+    <DockPanel Margin="32,28">
+
+        <!-- Header -->
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="0,0,0,24">
+            <StackPanel Spacing="4">
+                <TextBlock Text="Zamówienia" FontSize="28" FontWeight="SemiBold"/>
+                <TextBlock Text="Zamówienia od klientów (ZS) i do dostawców (ZZ)" Opacity="0.55" FontSize="14"/>
+            </StackPanel>
+            <Button Grid.Column="1" Content="+ Nowe zamówienie" VerticalAlignment="Bottom"
+                    Padding="14,8" CornerRadius="6"/>
+        </Grid>
+
+        <!-- Table -->
+        <Border CornerRadius="10"
+                Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+            <StackPanel>
+                <!-- Headers -->
+                <Border Padding="16,12"
+                        BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                        BorderThickness="0,0,0,1">
+                    <Grid ColumnDefinitions="40,150,*,110,100,90">
+                        <TextBlock Text="Typ" FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
+                        <TextBlock Grid.Column="1" Text="Numer" FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
+                        <TextBlock Grid.Column="2" Text="Kontrahent" FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
+                        <TextBlock Grid.Column="3" Text="Data" FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
+                        <TextBlock Grid.Column="4" Text="Wartość" FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
+                        <TextBlock Grid.Column="5" Text="Status" FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
+                    </Grid>
+                </Border>
+                <!-- Rows -->
+                <ItemsControl ItemsSource="{Binding Orders}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Padding="16,13"
+                                    BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                                    BorderThickness="0,0,0,1">
+                                <Grid ColumnDefinitions="40,150,*,110,100,90">
+                                    <Border CornerRadius="4" Padding="4,2" Background="{Binding TypeColor}" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding TypeLabel}" FontSize="10" FontWeight="Bold" Foreground="White"/>
+                                    </Border>
+                                    <TextBlock Grid.Column="1" Text="{Binding Number}" FontWeight="Medium" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="2" Text="{Binding CustomerName}" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="3" Text="{Binding OrderDate, StringFormat={}{0:dd.MM.yyyy}}" Opacity="0.7" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="4" Text="{Binding TotalValue, StringFormat={}{0:N2} zł}" VerticalAlignment="Center" FontWeight="Medium"/>
+                                    <Border Grid.Column="5" CornerRadius="4" Padding="6,3" Background="{Binding StatusColor}" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding StatusLabel}" FontSize="11" Foreground="White"/>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </Border>
+
+    </DockPanel>
+
+</UserControl>
