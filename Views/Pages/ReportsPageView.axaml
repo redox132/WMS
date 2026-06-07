@@ -1,0 +1,73 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:WMS.ViewModels.Pages"
+             x:Class="WMS.Views.Pages.ReportsPageView"
+             x:DataType="vm:ReportsPageViewModel"
+             x:CompileBindings="False">
+
+    <ScrollViewer Padding="32,28">
+        <StackPanel Spacing="24">
+
+            <StackPanel Spacing="4">
+                <TextBlock Text="Reports" FontSize="28" FontWeight="SemiBold"/>
+                <TextBlock Text="Generate and export warehouse reports" Opacity="0.55" FontSize="14"/>
+            </StackPanel>
+
+            <!-- Quick Totals -->
+            <Grid ColumnDefinitions="*,*,*">
+                <Border Grid.Column="0" Margin="0,0,12,0" Padding="20,16" CornerRadius="10"
+                        Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Total Inventory Value" FontSize="12" Opacity="0.6"/>
+                        <TextBlock Text="{Binding TotalStockValue, StringFormat={}{0:N2} PLN}" FontSize="22" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="1" Margin="0,0,12,0" Padding="20,16" CornerRadius="10"
+                        Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Low-Stock SKUs" FontSize="12" Opacity="0.6"/>
+                        <TextBlock Text="{Binding LowStockCount}" FontSize="22" FontWeight="Bold" Foreground="#E05252"/>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="2" Padding="20,16" CornerRadius="10"
+                        Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Open Orders" FontSize="12" Opacity="0.6"/>
+                        <TextBlock Text="{Binding OpenOrdersCount}" FontSize="22" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Report Cards -->
+            <TextBlock Text="Available Reports" FontSize="18" FontWeight="SemiBold"/>
+            <ItemsControl ItemsSource="{Binding Reports}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Width="260" Margin="0,0,16,16" Padding="20,18" CornerRadius="10"
+                                Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                            <StackPanel Spacing="10">
+                                <Grid ColumnDefinitions="Auto,*">
+                                    <Border Grid.Column="0" Width="36" Height="36" CornerRadius="8"
+                                            Background="{Binding Color}" Margin="0,0,12,0">
+                                        <TextBlock Text="{Binding Icon}" FontSize="18"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <TextBlock Grid.Column="1" Text="{Binding Title}" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                </Grid>
+                                <TextBlock Text="{Binding Description}" FontSize="12" Opacity="0.6" TextWrapping="Wrap"/>
+                                <Button Content="Generate →" HorizontalAlignment="Left"
+                                        Padding="10,6" CornerRadius="6" FontSize="12"/>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

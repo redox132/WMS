@@ -1,0 +1,74 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:WMS.ViewModels.Dialogs"
+        x:Class="WMS.Views.Dialogs.AddDocumentDialog"
+        x:DataType="vm:AddDocumentDialogViewModel"
+        x:CompileBindings="False"
+        Title="New Warehouse Document"
+        Width="480" Height="460"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False">
+
+    <Grid RowDefinitions="*,Auto" Margin="24">
+
+        <ScrollViewer Grid.Row="0">
+            <StackPanel Spacing="14">
+
+                <TextBlock Text="New Warehouse Document" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,6"/>
+
+                <!-- Document Type -->
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Document Type" FontSize="12" Opacity="0.6"/>
+                    <ComboBox ItemsSource="{Binding DocumentTypeOptions}" SelectedItem="{Binding DocumentType}" HorizontalAlignment="Stretch"/>
+                </StackPanel>
+
+                <!-- Type descriptions hint -->
+                <Border Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
+                        CornerRadius="6" Padding="12,8">
+                    <StackPanel Spacing="2">
+                        <TextBlock Text="WZ – Goods Issue  |  PZ – Goods Receipt" FontSize="11" Opacity="0.6"/>
+                        <TextBlock Text="MM – Transfer  |  PW – Internal Receipt  |  RW – Internal Issue" FontSize="11" Opacity="0.6"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Warehouse -->
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Warehouse" FontSize="12" Opacity="0.6"/>
+                    <ComboBox ItemsSource="{Binding Warehouses}"
+                              SelectedItem="{Binding SelectedWarehouse}"
+                              HorizontalAlignment="Stretch"
+                              DisplayMemberBinding="{Binding Name}"/>
+                </StackPanel>
+
+                <!-- Contractor -->
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Contractor / Supplier" FontSize="12" Opacity="0.6"/>
+                    <TextBox Text="{Binding ContractorName}" Watermark="Contractor name (optional)"/>
+                </StackPanel>
+
+                <!-- External Ref -->
+                <StackPanel Spacing="4">
+                    <TextBlock Text="External Reference" FontSize="12" Opacity="0.6"/>
+                    <TextBox Text="{Binding ExternalRef}" Watermark="Delivery note number, etc."/>
+                </StackPanel>
+
+                <!-- Notes -->
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Notes" FontSize="12" Opacity="0.6"/>
+                    <TextBox Text="{Binding Notes}" Watermark="Optional notes..." Height="60" AcceptsReturn="True"/>
+                </StackPanel>
+
+                <!-- Error -->
+                <TextBlock Text="{Binding ErrorMessage}" Foreground="#E05252" FontSize="12"
+                           IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Buttons -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10" Margin="0,16,0,0">
+            <Button Grid.Column="1" Content="Cancel" Click="Cancel_Click" Padding="20,8"/>
+            <Button Grid.Column="2" Content="Save"   Click="Save_Click"   Padding="20,8" Classes="accent"/>
+        </Grid>
+    </Grid>
+</Window>

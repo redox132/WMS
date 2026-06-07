@@ -20,8 +20,12 @@ public partial class MainWindowViewModel : ViewModelBase
             "Dashboard" => new DashboardPageViewModel(),
             "Products"  => new ProductsPageViewModel(),
             "Orders"    => new OrdersPageViewModel(),
+            "Suppliers" => new SuppliersPageViewModel(),
             "Customers" => new CustomersPageViewModel(),
             "Documents" => new DocumentsPageViewModel(),
+            "Analytics" => new AnalyticsPageViewModel(),
+            "Reports"   => new ReportsPageViewModel(),
+            "Settings"  => new SettingsPageViewModel(),
             _           => CurrentPage
         };
     }

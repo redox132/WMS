@@ -8,72 +8,201 @@
     <ScrollViewer Padding="32,28">
         <StackPanel Spacing="24">
 
-            <!-- Header -->
-            <StackPanel Spacing="4">
-                <TextBlock Text="Pulpit" FontSize="28" FontWeight="SemiBold"/>
-                <TextBlock Text="Przegląd operacji magazynowych" Opacity="0.55" FontSize="14"/>
+            <!-- ── Greeting ──────────────────────────────────────────────── -->
+            <StackPanel Spacing="3">
+                <TextBlock Text="{Binding Greeting}" FontSize="24" FontWeight="SemiBold"/>
+                <TextBlock Text="{Binding TodayDate}" FontSize="13" Opacity="0.5"/>
             </StackPanel>
 
-            <!-- Stat Cards -->
-            <Grid ColumnDefinitions="*,*,*,*">
-                <Border Grid.Column="0" Margin="0,0,12,0" Padding="20,18" CornerRadius="10"
+            <!-- ── KPI Cards ─────────────────────────────────────────────── -->
+            <Grid ColumnDefinitions="*,*,*,*,*">
+
+                <Border Grid.Column="0" Margin="0,0,10,0" Padding="18,16" CornerRadius="10"
                         Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
                     <StackPanel Spacing="6">
-                        <TextBlock Text="Produkty" FontSize="13" Opacity="0.6"/>
-                        <TextBlock Text="{Binding TotalProducts}" FontSize="30" FontWeight="Bold"/>
-                        <TextBlock Text="indeksy magazynowe" FontSize="12" Opacity="0.5"/>
+                        <TextBlock Text="Products" FontSize="12" Opacity="0.6"/>
+                        <TextBlock Text="{Binding TotalProducts}" FontSize="28" FontWeight="Bold"/>
+                        <TextBlock Text="catalogue items" FontSize="11" Opacity="0.45"/>
                     </StackPanel>
                 </Border>
-                <Border Grid.Column="1" Margin="0,0,12,0" Padding="20,18" CornerRadius="10"
+
+                <Border Grid.Column="1" Margin="0,0,10,0" Padding="18,16" CornerRadius="10"
                         Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
                     <StackPanel Spacing="6">
-                        <TextBlock Text="Otwarte zamówienia" FontSize="13" Opacity="0.6"/>
-                        <TextBlock Text="{Binding OpenOrders}" FontSize="30" FontWeight="Bold"/>
-                        <TextBlock Text="ZS + ZZ do realizacji" FontSize="12" Opacity="0.5"/>
+                        <TextBlock Text="Open Orders" FontSize="12" Opacity="0.6"/>
+                        <TextBlock Text="{Binding OpenOrders}" FontSize="28" FontWeight="Bold"/>
+                        <TextBlock Text="SO + PO pending" FontSize="11" Opacity="0.45"/>
                     </StackPanel>
                 </Border>
-                <Border Grid.Column="2" Margin="0,0,12,0" Padding="20,18" CornerRadius="10"
+
+                <Border Grid.Column="2" Margin="0,0,10,0" Padding="18,16" CornerRadius="10"
                         Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
                     <StackPanel Spacing="6">
-                        <TextBlock Text="Kontrahenci" FontSize="13" Opacity="0.6"/>
-                        <TextBlock Text="{Binding TotalCustomers}" FontSize="30" FontWeight="Bold"/>
-                        <TextBlock Text="aktywni odbiorcy i dostawcy" FontSize="12" Opacity="0.5"/>
+                        <TextBlock Text="Customers" FontSize="12" Opacity="0.6"/>
+                        <TextBlock Text="{Binding TotalCustomers}" FontSize="28" FontWeight="Bold"/>
+                        <TextBlock Text="active accounts" FontSize="11" Opacity="0.45"/>
                     </StackPanel>
                 </Border>
-                <Border Grid.Column="3" Padding="20,18" CornerRadius="10"
+
+                <Border Grid.Column="3" Margin="0,0,10,0" Padding="18,16" CornerRadius="10"
                         Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
                     <StackPanel Spacing="6">
-                        <TextBlock Text="Niski stan" FontSize="13" Opacity="0.6"/>
-                        <TextBlock Text="{Binding LowStockItems}" FontSize="30" FontWeight="Bold" Foreground="#E05252"/>
-                        <TextBlock Text="indeksów wymaga uzupełnienia" FontSize="12" Opacity="0.5"/>
+                        <TextBlock Text="Low Stock" FontSize="12" Opacity="0.6"/>
+                        <TextBlock Text="{Binding LowStockItems}" FontSize="28" FontWeight="Bold" Foreground="#E05252"/>
+                        <TextBlock Text="need replenishment" FontSize="11" Opacity="0.45"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="4" Padding="18,16" CornerRadius="10"
+                        Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="Stock Value" FontSize="12" Opacity="0.6"/>
+                        <TextBlock Text="{Binding TotalStockValue, StringFormat={}{0:N0}}" FontSize="22" FontWeight="Bold"/>
+                        <TextBlock Text="PLN (sell prices)" FontSize="11" Opacity="0.45"/>
                     </StackPanel>
                 </Border>
             </Grid>
 
-            <!-- Recent Activity -->
-            <StackPanel Spacing="12">
-                <TextBlock Text="Ostatnia aktywność" FontSize="18" FontWeight="SemiBold"/>
-                <Border CornerRadius="10"
-                        Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
-                    <ItemsControl ItemsSource="{Binding RecentActivity}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Border Padding="20,14"
-                                        BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-                                        BorderThickness="0,0,0,1">
-                                    <Grid ColumnDefinitions="*,Auto">
-                                        <TextBlock Text="{Binding Text}" VerticalAlignment="Center" TextWrapping="Wrap"/>
-                                        <TextBlock Grid.Column="1" Text="{Binding Time}" Opacity="0.5" FontSize="12"
-                                                   VerticalAlignment="Center" Margin="16,0,0,0"/>
-                                    </Grid>
-                                </Border>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </Border>
-            </StackPanel>
+            <!-- ── Main content: two columns ─────────────────────────────── -->
+            <Grid ColumnDefinitions="*,340">
+
+                <!-- LEFT COLUMN -->
+                <StackPanel Grid.Column="0" Spacing="20" Margin="0,0,20,0">
+
+                    <!-- Stock by Category chart -->
+                    <Border Padding="20" CornerRadius="10"
+                            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                        <StackPanel Spacing="14">
+                            <TextBlock Text="Stock Units by Category" FontSize="15" FontWeight="SemiBold"/>
+                            <ItemsControl ItemsSource="{Binding StockByCategory}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Spacing="5" Margin="0,0,0,10">
+                                            <Grid ColumnDefinitions="*,Auto">
+                                                <TextBlock Text="{Binding Label}" FontSize="12" TextTrimming="CharacterEllipsis"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding ValueLabel}" FontSize="12" Opacity="0.6" Margin="8,0,0,0"/>
+                                            </Grid>
+                                            <Grid ColumnDefinitions="Auto,*">
+                                                <Border Grid.Column="0" CornerRadius="3" Height="10"
+                                                        Width="{Binding BarWidth}" Background="{Binding Color}"
+                                                        HorizontalAlignment="Left"/>
+                                            </Grid>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Recent Activity -->
+                    <Border Padding="0" CornerRadius="10"
+                            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                        <StackPanel>
+                            <Border Padding="20,16,20,12" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="0,0,0,1">
+                                <TextBlock Text="Recent Activity" FontSize="15" FontWeight="SemiBold"/>
+                            </Border>
+                            <ItemsControl ItemsSource="{Binding RecentActivity}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Padding="20,12"
+                                                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                                                BorderThickness="0,0,0,1">
+                                            <Grid ColumnDefinitions="6,*,Auto">
+                                                <Border Grid.Column="0" Width="6" CornerRadius="3"
+                                                        Background="{Binding Color}" Margin="0,0,12,0"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding Text}" FontSize="12"
+                                                           TextWrapping="Wrap" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="2" Text="{Binding Time}" FontSize="11"
+                                                           Opacity="0.5" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+
+                <!-- RIGHT COLUMN -->
+                <StackPanel Grid.Column="1" Spacing="20">
+
+                    <!-- Quick Actions -->
+                    <Border Padding="20" CornerRadius="10"
+                            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="Quick Actions" FontSize="15" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                            <Button Content="+ Add Product"   HorizontalAlignment="Stretch" Padding="0,10"
+                                    CornerRadius="7" Click="AddProduct_Click"/>
+                            <Button Content="+ New Order"     HorizontalAlignment="Stretch" Padding="0,10"
+                                    CornerRadius="7" Click="AddOrder_Click"/>
+                            <Button Content="+ Add Customer"  HorizontalAlignment="Stretch" Padding="0,10"
+                                    CornerRadius="7" Click="AddCustomer_Click"/>
+                            <Button Content="+ New Document"  HorizontalAlignment="Stretch" Padding="0,10"
+                                    CornerRadius="7" Click="AddDocument_Click"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Low-Stock Alerts -->
+                    <Border Padding="0" CornerRadius="10"
+                            Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                        <StackPanel>
+                            <Border Padding="20,16,20,12" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="0,0,0,1">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock Text="Low-Stock Alerts" FontSize="15" FontWeight="SemiBold"/>
+                                    <Border Grid.Column="1" Background="#B71C1C" CornerRadius="10" Padding="8,2">
+                                        <TextBlock Text="{Binding LowStockItems}" FontSize="11" Foreground="White" FontWeight="SemiBold"/>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                            <ItemsControl ItemsSource="{Binding LowStockProducts}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Padding="20,11"
+                                                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                                                BorderThickness="0,0,0,1">
+                                            <Grid ColumnDefinitions="*,Auto">
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding Name}" FontSize="12" TextTrimming="CharacterEllipsis"/>
+                                                    <TextBlock Text="{Binding SKU}"  FontSize="11" Opacity="0.45"/>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                                                    <TextBlock Text="{Binding StockLevel, StringFormat={}Stock: {0}}"
+                                                               FontSize="12" Foreground="#E05252" FontWeight="Medium"/>
+                                                    <TextBlock Text="{Binding MinStockLevel, StringFormat={}Min: {0}}"
+                                                               FontSize="11" Opacity="0.5" HorizontalAlignment="Right"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <TextBlock Padding="20,12" Text="All stock levels normal." FontSize="12" Opacity="0.5"
+                                       IsVisible="{Binding LowStockItems, Converter={x:Static BoolConverters.Not}}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Mini Stats -->
+                    <Grid ColumnDefinitions="*,*">
+                        <Border Grid.Column="0" Margin="0,0,8,0" Padding="16,14" CornerRadius="10"
+                                Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="Docs Today" FontSize="11" Opacity="0.55"/>
+                                <TextBlock Text="{Binding DocumentsToday}" FontSize="22" FontWeight="Bold"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Column="1" Padding="16,14" CornerRadius="10"
+                                Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="Orders / 7 d" FontSize="11" Opacity="0.55"/>
+                                <TextBlock Text="{Binding OrdersThisWeek}" FontSize="22" FontWeight="Bold"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                </StackPanel>
+            </Grid>
 
         </StackPanel>
     </ScrollViewer>
-
 </UserControl>

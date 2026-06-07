@@ -1,0 +1,110 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:WMS.ViewModels.Dialogs"
+        xmlns:models="using:WMS.Models"
+        x:Class="WMS.Views.Dialogs.AddCustomerDialog"
+        x:DataType="vm:AddCustomerDialogViewModel"
+        x:CompileBindings="False"
+        Title="Add Customer / Supplier"
+        Width="500" Height="620"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False">
+
+    <Grid RowDefinitions="*,Auto" Margin="24">
+
+        <ScrollViewer Grid.Row="0">
+            <StackPanel Spacing="14">
+
+                <TextBlock Text="New Customer / Supplier" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,6"/>
+
+                <!-- Name -->
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Name *" FontSize="12" Opacity="0.6"/>
+                    <TextBox Text="{Binding Name}" Watermark="Company or person name"/>
+                </StackPanel>
+
+                <!-- Type -->
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Type" FontSize="12" Opacity="0.6"/>
+                    <ComboBox ItemsSource="{Binding TypeOptions}" SelectedItem="{Binding Type}" HorizontalAlignment="Stretch"/>
+                </StackPanel>
+
+                <!-- Tax ID + Email -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                    <StackPanel Grid.Column="0" Spacing="4">
+                        <TextBlock Text="Tax ID (NIP/VAT)" FontSize="12" Opacity="0.6"/>
+                        <TextBox Text="{Binding TaxId}" Watermark="e.g. PL1234567890"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Spacing="4">
+                        <TextBlock Text="Email" FontSize="12" Opacity="0.6"/>
+                        <TextBox Text="{Binding Email}" Watermark="contact@example.com"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Phone + Contact Person -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                    <StackPanel Grid.Column="0" Spacing="4">
+                        <TextBlock Text="Phone" FontSize="12" Opacity="0.6"/>
+                        <TextBox Text="{Binding Phone}" Watermark="+48 ..."/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Spacing="4">
+                        <TextBlock Text="Contact Person" FontSize="12" Opacity="0.6"/>
+                        <TextBox Text="{Binding ContactPerson}" Watermark="Full name"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Address -->
+                <TextBlock Text="Billing Address" FontSize="13" FontWeight="Medium" Margin="0,4,0,0"/>
+
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Street" FontSize="12" Opacity="0.6"/>
+                    <TextBox Text="{Binding BillingStreet}" Watermark="Street and number"/>
+                </StackPanel>
+
+                <Grid ColumnDefinitions="*,120,80" ColumnSpacing="12">
+                    <StackPanel Grid.Column="0" Spacing="4">
+                        <TextBlock Text="City" FontSize="12" Opacity="0.6"/>
+                        <TextBox Text="{Binding BillingCity}" Watermark="City"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Spacing="4">
+                        <TextBlock Text="Postal Code" FontSize="12" Opacity="0.6"/>
+                        <TextBox Text="{Binding BillingPostalCode}" Watermark="00-000"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" Spacing="4">
+                        <TextBlock Text="Country" FontSize="12" Opacity="0.6"/>
+                        <TextBox Text="{Binding BillingCountry}" Watermark="PL"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Payment Terms + Currency -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                    <StackPanel Grid.Column="0" Spacing="4">
+                        <TextBlock Text="Payment Terms (days)" FontSize="12" Opacity="0.6"/>
+                        <NumericUpDown Value="{Binding PaymentTermDays}" Minimum="0" Maximum="365" FormatString="N0"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Spacing="4">
+                        <TextBlock Text="Currency" FontSize="12" Opacity="0.6"/>
+                        <TextBox Text="{Binding Currency}" Watermark="PLN"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Notes -->
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Notes" FontSize="12" Opacity="0.6"/>
+                    <TextBox Text="{Binding Notes}" Watermark="Optional notes..." Height="60" AcceptsReturn="True"/>
+                </StackPanel>
+
+                <!-- Error -->
+                <TextBlock Text="{Binding ErrorMessage}" Foreground="#E05252" FontSize="12"
+                           IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Buttons -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10" Margin="0,16,0,0">
+            <Button Grid.Column="1" Content="Cancel" Click="Cancel_Click" Padding="20,8"/>
+            <Button Grid.Column="2" Content="Save"   Click="Save_Click"   Padding="20,8" Classes="accent"/>
+        </Grid>
+    </Grid>
+</Window>

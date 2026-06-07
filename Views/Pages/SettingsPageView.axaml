@@ -1,0 +1,62 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:WMS.ViewModels.Pages"
+             x:Class="WMS.Views.Pages.SettingsPageView"
+             x:DataType="vm:SettingsPageViewModel"
+             x:CompileBindings="False">
+
+    <ScrollViewer Padding="32,28">
+        <StackPanel Spacing="28" MaxWidth="600" HorizontalAlignment="Left">
+
+            <StackPanel Spacing="4">
+                <TextBlock Text="Settings" FontSize="28" FontWeight="SemiBold"/>
+                <TextBlock Text="Application preferences and system info" Opacity="0.55" FontSize="14"/>
+            </StackPanel>
+
+            <!-- Appearance -->
+            <Border Padding="24" CornerRadius="10" Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="Appearance" FontSize="16" FontWeight="SemiBold"/>
+                    <Grid ColumnDefinitions="*,Auto" VerticalAlignment="Center">
+                        <StackPanel>
+                            <TextBlock Text="Dark Mode" FontSize="14"/>
+                            <TextBlock Text="Switch between light and dark interface theme" FontSize="12" Opacity="0.55"/>
+                        </StackPanel>
+                        <ToggleSwitch Grid.Column="1" IsChecked="{Binding IsDarkTheme}" VerticalAlignment="Center"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Database -->
+            <Border Padding="24" CornerRadius="10" Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="Database" FontSize="16" FontWeight="SemiBold"/>
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="Location" FontSize="12" Opacity="0.6"/>
+                        <TextBlock Text="{Binding DatabasePath}" FontSize="12" TextWrapping="Wrap" Opacity="0.8"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Button Content="Open Folder" Padding="12,7" CornerRadius="6"/>
+                        <Button Content="Backup DB"   Padding="12,7" CornerRadius="6"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- About -->
+            <Border Padding="24" CornerRadius="10" Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="About" FontSize="16" FontWeight="SemiBold"/>
+                    <Grid ColumnDefinitions="150,*" RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                        <TextBlock Text="Application"   Opacity="0.6" FontSize="13"/>
+                        <TextBlock Grid.Column="1" Text="WMS — Warehouse Management System" FontSize="13"/>
+                        <TextBlock Grid.Row="1" Text="Version" Opacity="0.6" FontSize="13"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding AppVersion}" FontSize="13"/>
+                        <TextBlock Grid.Row="2" Text="Platform" Opacity="0.6" FontSize="13"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" Text="Avalonia UI — Windows / macOS / Linux" FontSize="13"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

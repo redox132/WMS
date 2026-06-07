@@ -1,0 +1,96 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:WMS.ViewModels.Dialogs"
+        x:Class="WMS.Views.Dialogs.AddProductDialog"
+        x:DataType="vm:AddProductDialogViewModel"
+        x:CompileBindings="False"
+        Title="Add Product"
+        Width="500" Height="600"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False">
+
+    <Grid RowDefinitions="*,Auto" Margin="24">
+
+        <ScrollViewer Grid.Row="0">
+            <StackPanel Spacing="14">
+
+                <TextBlock Text="New Product" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,6"/>
+
+                <!-- Name -->
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Name *" FontSize="12" Opacity="0.6"/>
+                    <TextBox Text="{Binding Name}" Watermark="Product name"/>
+                </StackPanel>
+
+                <!-- SKU -->
+                <StackPanel Spacing="4">
+                    <TextBlock Text="SKU *" FontSize="12" Opacity="0.6"/>
+                    <TextBox Text="{Binding SKU}" Watermark="Unique stock-keeping unit"/>
+                </StackPanel>
+
+                <!-- Category + Unit -->
+                <Grid ColumnDefinitions="*,140" ColumnSpacing="12">
+                    <StackPanel Grid.Column="0" Spacing="4">
+                        <TextBlock Text="Category" FontSize="12" Opacity="0.6"/>
+                        <TextBox Text="{Binding CategoryName}" Watermark="e.g. Electronics"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Spacing="4">
+                        <TextBlock Text="Unit" FontSize="12" Opacity="0.6"/>
+                        <TextBox Text="{Binding Unit}" Watermark="pcs"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Stock Level + Min Stock -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                    <StackPanel Grid.Column="0" Spacing="4">
+                        <TextBlock Text="Stock Level" FontSize="12" Opacity="0.6"/>
+                        <NumericUpDown Value="{Binding StockLevel}" Minimum="0" FormatString="N2" Increment="1"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Spacing="4">
+                        <TextBlock Text="Min Stock Level" FontSize="12" Opacity="0.6"/>
+                        <NumericUpDown Value="{Binding MinStockLevel}" Minimum="0" FormatString="N2" Increment="1"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Purchase Price + Sale Price -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                    <StackPanel Grid.Column="0" Spacing="4">
+                        <TextBlock Text="Purchase Price" FontSize="12" Opacity="0.6"/>
+                        <NumericUpDown Value="{Binding PurchasePrice}" Minimum="0" FormatString="N2" Increment="0.01"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Spacing="4">
+                        <TextBlock Text="Sale Price" FontSize="12" Opacity="0.6"/>
+                        <NumericUpDown Value="{Binding SalePrice1}" Minimum="0" FormatString="N2" Increment="0.01"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- VAT Rate + Warehouse Location -->
+                <Grid ColumnDefinitions="140,*" ColumnSpacing="12">
+                    <StackPanel Grid.Column="0" Spacing="4">
+                        <TextBlock Text="VAT Rate (%)" FontSize="12" Opacity="0.6"/>
+                        <NumericUpDown Value="{Binding VatRateSale}" Minimum="0" Maximum="100" FormatString="N0"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Spacing="4">
+                        <TextBlock Text="Warehouse Location" FontSize="12" Opacity="0.6"/>
+                        <TextBox Text="{Binding WarehouseLocation}" Watermark="e.g. A-01-03"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Is Service -->
+                <CheckBox IsChecked="{Binding IsService}" Content="This is a service (no stock tracking)"/>
+
+                <!-- Error -->
+                <TextBlock Text="{Binding ErrorMessage}" Foreground="#E05252" FontSize="12"
+                           IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Buttons -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10" Margin="0,16,0,0">
+            <Button Grid.Column="1" Content="Cancel"  Click="Cancel_Click"  Padding="20,8"/>
+            <Button Grid.Column="2" Content="Save"    Click="Save_Click"    Padding="20,8"
+                    Classes="accent"/>
+        </Grid>
+    </Grid>
+</Window>

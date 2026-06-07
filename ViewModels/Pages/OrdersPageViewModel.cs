@@ -1,51 +1,50 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using CommunityToolkit.Mvvm.ComponentModel;
 using WMS.Models;
+using WMS.Services;
 
 namespace WMS.ViewModels.Pages;
 
 public partial class OrdersPageViewModel : ViewModelBase
 {
-    public ObservableCollection<Order> Orders { get; } = new()
+    private readonly List<Order> _all;
+
+    public ObservableCollection<Order> Orders { get; } = new();
+
+    [ObservableProperty] private string _searchText    = "";
+    [ObservableProperty] private string _statusFilter  = "All";
+    [ObservableProperty] private string _typeFilter    = "All";
+
+    public string[] StatusFilters { get; } = { "All", "New", "Confirmed", "In Progress", "Shipped", "Delivered", "Cancelled" };
+    public string[] TypeFilters   { get; } = { "All", "Sales Order", "Purchase Order" };
+
+    public OrdersPageViewModel()
     {
-        new Order
+        _all = AppServices.Orders.GetAll();
+        ApplyFilter();
+    }
+
+    partial void OnSearchTextChanged(string value)   => ApplyFilter();
+    partial void OnStatusFilterChanged(string value) => ApplyFilter();
+    partial void OnTypeFilterChanged(string value)   => ApplyFilter();
+
+    private void ApplyFilter()
+    {
+        var q = SearchText.Trim();
+        Orders.Clear();
+        foreach (var o in _all.Where(o =>
+            (string.IsNullOrEmpty(q) ||
+             o.Number.Contains(q, StringComparison.OrdinalIgnoreCase) ||
+             o.CustomerName.Contains(q, StringComparison.OrdinalIgnoreCase)) &&
+            (StatusFilter == "All" || o.StatusLabel == StatusFilter) &&
+            (TypeFilter == "All" ||
+             (TypeFilter == "Sales Order"    && o.Type == OrderType.Sales) ||
+             (TypeFilter == "Purchase Order" && o.Type == OrderType.Purchase))))
         {
-            Id=1, Number="ZS/2026/042", Type=OrderType.Sales, Status=OrderStatus.Shipped,
-            OrderDate=new DateTime(2026,6,6), DueDate=new DateTime(2026,6,10),
-            CustomerName="Acme Sp. z o.o.",
-            Lines= new() { new OrderLine { ProductName="Śruba M8 x 40", Quantity=120, Unit="opak.", UnitPrice=54.00m } }
-        },
-        new Order
-        {
-            Id=2, Number="ZS/2026/041", Type=OrderType.Sales, Status=OrderStatus.Delivered,
-            OrderDate=new DateTime(2026,6,5), DueDate=new DateTime(2026,6,9),
-            CustomerName="BuildRight Sp. z o.o.",
-            Lines= new() { new OrderLine { ProductName="Rura PVC 50mm x 3m", Quantity=30, Unit="szt.", UnitPrice=28.50m } }
-        },
-        new Order
-        {
-            Id=3, Number="ZS/2026/040", Type=OrderType.Sales, Status=OrderStatus.InProgress,
-            OrderDate=new DateTime(2026,6,4), DueDate=new DateTime(2026,6,8),
-            CustomerName="TechMart GmbH",
-            Lines= new()
-            {
-                new OrderLine { ProductName="Kabel YDY 3x1,5mm²", Quantity=20, Unit="rolka", UnitPrice=285.00m },
-                new OrderLine { ProductName="Zawór kulowy 1/2\" DN15", Quantity=150, Unit="szt.", UnitPrice=19.80m }
-            }
-        },
-        new Order
-        {
-            Id=4, Number="ZZ/2026/018", Type=OrderType.Purchase, Status=OrderStatus.Confirmed,
-            OrderDate=new DateTime(2026,6,3), DueDate=new DateTime(2026,6,12),
-            CustomerName="Metaltech S.A.",
-            Lines= new() { new OrderLine { ProductName="Nakrętka M8", Quantity=50, Unit="opak.", UnitPrice=22.00m } }
-        },
-        new Order
-        {
-            Id=5, Number="ZS/2026/039", Type=OrderType.Sales, Status=OrderStatus.Delivered,
-            OrderDate=new DateTime(2026,6,3),
-            CustomerName="GlobalFix Sp. z o.o.",
-            Lines= new() { new OrderLine { ProductName="Opaska zaciskowa 200mm", Quantity=20, Unit="opak.", UnitPrice=14.00m } }
-        },
-    };
+            Orders.Add(o);
+        }
+    }
 }

@@ -3,19 +3,25 @@
         xmlns:vm="using:WMS.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="700"
+        mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="750"
         x:Class="WMS.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="WMS"
-        MinWidth="800" MinHeight="500">
+        Title="WMS — Warehouse Management System"
+        MinWidth="900" MinHeight="560">
 
     <Window.Styles>
         <Style Selector="ListBoxItem.NavItem">
-            <Setter Property="Padding" Value="14,11"/>
-            <Setter Property="Margin" Value="4,2"/>
+            <Setter Property="Padding"      Value="12,10"/>
+            <Setter Property="Margin"       Value="4,1"/>
             <Setter Property="CornerRadius" Value="7"/>
-            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontSize"     Value="13.5"/>
+        </Style>
+        <Style Selector="TextBlock.NavSection">
+            <Setter Property="FontSize"     Value="10"/>
+            <Setter Property="FontWeight"   Value="SemiBold"/>
+            <Setter Property="Opacity"      Value="0.4"/>
+            <Setter Property="Margin"       Value="16,14,0,4"/>
         </Style>
     </Window.Styles>
 
@@ -23,60 +29,67 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <Grid ColumnDefinitions="220,*">
+    <Grid ColumnDefinitions="224,*">
 
-        <!-- Sidebar -->
+        <!-- ── Sidebar ─────────────────────────────────────────────────────── -->
         <Border Grid.Column="0"
                 Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
                 BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
                 BorderThickness="0,0,1,0">
             <DockPanel>
 
-                <!-- App Title -->
-                <Border DockPanel.Dock="Top" Padding="20,22,20,14">
-                    <StackPanel Spacing="3">
-                        <TextBlock Text="WMS" FontSize="22" FontWeight="Bold"/>
-                        <TextBlock Text="Warehouse Management" FontSize="11" Opacity="0.5"/>
+                <!-- App title -->
+                <Border DockPanel.Dock="Top" Padding="18,20,18,12">
+                    <StackPanel Spacing="2">
+                        <TextBlock Text="WMS" FontSize="21" FontWeight="Bold"/>
+                        <TextBlock Text="Warehouse Management" FontSize="11" Opacity="0.45"/>
                     </StackPanel>
                 </Border>
 
-                <Separator DockPanel.Dock="Top" Margin="16,0,16,6" Opacity="0.25"/>
+                <Separator DockPanel.Dock="Top" Margin="14,0,14,4" Opacity="0.2"/>
 
-                <!-- Nav Items -->
-                <ListBox x:Name="NavList"
-                         DockPanel.Dock="Top"
-                         Background="Transparent"
-                         Margin="4,2"
-                         SelectedIndex="0"
-                         SelectionChanged="NavList_SelectionChanged">
-                    <ListBoxItem Classes="NavItem" Tag="Dashboard">
-                        <TextBlock Text="Dashboard"/>
-                    </ListBoxItem>
-                    <ListBoxItem Classes="NavItem" Tag="Products">
-                        <TextBlock Text="Products"/>
-                    </ListBoxItem>
-                    <ListBoxItem Classes="NavItem" Tag="Orders">
-                        <TextBlock Text="Orders"/>
-                    </ListBoxItem>
-                    <ListBoxItem Classes="NavItem" Tag="Customers">
-                        <TextBlock Text="Customers"/>
-                    </ListBoxItem>
-                    <ListBoxItem Classes="NavItem" Tag="Documents">
-                        <TextBlock Text="Dokumenty mag."/>
-                    </ListBoxItem>
+                <!-- INVENTORY section -->
+                <TextBlock DockPanel.Dock="Top" Classes="NavSection" Text="INVENTORY"/>
+                <ListBox x:Name="NavInventory" DockPanel.Dock="Top" Background="Transparent"
+                         Margin="4,0" SelectedIndex="0" SelectionChanged="Nav_SelectionChanged">
+                    <ListBoxItem Classes="NavItem" Tag="Dashboard">Dashboard</ListBoxItem>
+                    <ListBoxItem Classes="NavItem" Tag="Products">Products</ListBoxItem>
+                </ListBox>
+
+                <!-- OPERATIONS section -->
+                <TextBlock DockPanel.Dock="Top" Classes="NavSection" Text="OPERATIONS"/>
+                <ListBox x:Name="NavOperations" DockPanel.Dock="Top" Background="Transparent"
+                         Margin="4,0" SelectionChanged="Nav_SelectionChanged">
+                    <ListBoxItem Classes="NavItem" Tag="Orders">Orders</ListBoxItem>
+                    <ListBoxItem Classes="NavItem" Tag="Suppliers">Suppliers</ListBoxItem>
+                    <ListBoxItem Classes="NavItem" Tag="Customers">Customers</ListBoxItem>
+                    <ListBoxItem Classes="NavItem" Tag="Documents">Documents</ListBoxItem>
+                </ListBox>
+
+                <!-- ANALYTICS section -->
+                <TextBlock DockPanel.Dock="Top" Classes="NavSection" Text="ANALYTICS"/>
+                <ListBox x:Name="NavAnalytics" DockPanel.Dock="Top" Background="Transparent"
+                         Margin="4,0" SelectionChanged="Nav_SelectionChanged">
+                    <ListBoxItem Classes="NavItem" Tag="Analytics">Analytics</ListBoxItem>
+                    <ListBoxItem Classes="NavItem" Tag="Reports">Reports</ListBoxItem>
+                </ListBox>
+
+                <!-- Bottom: Settings -->
+                <Separator DockPanel.Dock="Bottom" Margin="14,4" Opacity="0.2"/>
+                <ListBox x:Name="NavSystem" DockPanel.Dock="Bottom" Background="Transparent"
+                         Margin="4,0,4,4" SelectionChanged="Nav_SelectionChanged">
+                    <ListBoxItem Classes="NavItem" Tag="Settings">Settings</ListBoxItem>
                 </ListBox>
 
             </DockPanel>
         </Border>
 
-        <!-- Content Area with CrossFade transition -->
-        <TransitioningContentControl Grid.Column="1"
-                                     Content="{Binding CurrentPage}">
+        <!-- ── Content Area ─────────────────────────────────────────────────── -->
+        <TransitioningContentControl Grid.Column="1" Content="{Binding CurrentPage}">
             <TransitioningContentControl.PageTransition>
-                <CrossFade Duration="0:0:0.18"/>
+                <CrossFade Duration="0:0:0.16"/>
             </TransitioningContentControl.PageTransition>
         </TransitioningContentControl>
 
     </Grid>
-
 </Window>

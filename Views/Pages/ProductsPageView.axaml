@@ -1,7 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:WMS.ViewModels.Pages"
-             xmlns:m="using:WMS.Models"
              x:Class="WMS.Views.Pages.ProductsPageView"
              x:DataType="vm:ProductsPageViewModel"
              x:CompileBindings="False">
@@ -9,54 +8,54 @@
     <DockPanel Margin="32,28">
 
         <!-- Header -->
-        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="0,0,0,24">
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="0,0,0,16">
             <StackPanel Spacing="4">
-                <TextBlock Text="Produkty" FontSize="28" FontWeight="SemiBold"/>
-                <TextBlock Text="Kartoteka towarów i stanów magazynowych" Opacity="0.55" FontSize="14"/>
+                <TextBlock Text="Products" FontSize="28" FontWeight="SemiBold"/>
+                <TextBlock Text="Product catalogue and stock levels" Opacity="0.55" FontSize="14"/>
             </StackPanel>
-            <Button Grid.Column="1" Content="+ Nowy produkt" VerticalAlignment="Bottom"
-                    Padding="14,8" CornerRadius="6"/>
+            <Button Grid.Column="1" Content="+ New Product" VerticalAlignment="Bottom" Padding="14,8" CornerRadius="6" Click="AddProduct_Click"/>
+        </Grid>
+
+        <!-- Toolbar -->
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,160,140,Auto" Margin="0,0,0,14">
+            <TextBox Grid.Column="0" Watermark="Search name, SKU or barcode…"
+                     Text="{Binding SearchText}" Margin="0,0,10,0" CornerRadius="6"/>
+            <ComboBox Grid.Column="1" ItemsSource="{Binding Categories}"
+                      SelectedItem="{Binding CategoryFilter}" Margin="0,0,10,0" HorizontalAlignment="Stretch"/>
+            <ToggleButton Grid.Column="2" Content="Low Stock Only"
+                          IsChecked="{Binding LowStockOnly}" HorizontalAlignment="Stretch" CornerRadius="6"/>
         </Grid>
 
         <!-- Table -->
-        <Border CornerRadius="10"
-                Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+        <Border CornerRadius="10" Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
             <ScrollViewer>
                 <StackPanel>
-                    <!-- Column Headers -->
-                    <Border Padding="16,12"
-                            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-                            BorderThickness="0,0,0,1">
-                        <Grid ColumnDefinitions="*,100,60,60,90,95,75">
-                            <TextBlock Text="Nazwa / Kod kreskowy" FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
-                            <TextBlock Grid.Column="1" Text="SKU" FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
-                            <TextBlock Grid.Column="2" Text="Jedn." FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
-                            <TextBlock Grid.Column="3" Text="Stan" FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
-                            <TextBlock Grid.Column="4" Text="Cena zakupu" FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
-                            <TextBlock Grid.Column="5" Text="Cena sprzedaży" FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
-                            <TextBlock Grid.Column="6" Text="Status" FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
+                    <Border Padding="16,12" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="0,0,0,1">
+                        <Grid ColumnDefinitions="*,95,55,60,88,95,72">
+                            <TextBlock Text="Name / Barcode"  FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
+                            <TextBlock Grid.Column="1" Text="SKU"        FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
+                            <TextBlock Grid.Column="2" Text="Unit"       FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
+                            <TextBlock Grid.Column="3" Text="Stock"      FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
+                            <TextBlock Grid.Column="4" Text="Buy Price"  FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
+                            <TextBlock Grid.Column="5" Text="Sell Price" FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
+                            <TextBlock Grid.Column="6" Text="Status"     FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
                         </Grid>
                     </Border>
-                    <!-- Rows -->
                     <ItemsControl ItemsSource="{Binding Products}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border Padding="16,13"
-                                        BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-                                        BorderThickness="0,0,0,1">
-                                    <Grid ColumnDefinitions="*,100,60,60,90,95,75">
+                                <Border Padding="16,13" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="0,0,0,1">
+                                    <Grid ColumnDefinitions="*,95,55,60,88,95,72">
                                         <StackPanel VerticalAlignment="Center">
                                             <TextBlock Text="{Binding Name}" FontSize="13" TextWrapping="Wrap"/>
                                             <TextBlock Text="{Binding Barcode}" FontSize="11" Opacity="0.45"/>
                                         </StackPanel>
-                                        <TextBlock Grid.Column="1" Text="{Binding SKU}" FontSize="11" Opacity="0.65" VerticalAlignment="Center" TextWrapping="Wrap"/>
-                                        <TextBlock Grid.Column="2" Text="{Binding Unit}" VerticalAlignment="Center"/>
-                                        <TextBlock Grid.Column="3" Text="{Binding StockLevel}" VerticalAlignment="Center"
-                                                   Foreground="{Binding StockLevelColor}"/>
-                                        <TextBlock Grid.Column="4" Text="{Binding PurchasePrice, StringFormat={}{0:N2} zł}" FontSize="13" VerticalAlignment="Center"/>
-                                        <TextBlock Grid.Column="5" Text="{Binding SalePrice, StringFormat={}{0:N2} zł}" FontSize="13" VerticalAlignment="Center"/>
-                                        <Border Grid.Column="6" VerticalAlignment="Center" CornerRadius="4" Padding="6,3"
-                                                Background="{Binding StatusBadgeColor}">
+                                        <TextBlock Grid.Column="1" Text="{Binding SKU}"          FontSize="11" Opacity="0.65" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                                        <TextBlock Grid.Column="2" Text="{Binding Unit}"          VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="3" Text="{Binding StockLevel}"    VerticalAlignment="Center" Foreground="{Binding StockLevelColor}"/>
+                                        <TextBlock Grid.Column="4" Text="{Binding PurchasePrice, StringFormat={}{0:N2}}" FontSize="13" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="5" Text="{Binding SalePrice1,    StringFormat={}{0:N2}}" FontSize="13" VerticalAlignment="Center"/>
+                                        <Border Grid.Column="6" VerticalAlignment="Center" CornerRadius="4" Padding="6,3" Background="{Binding StatusBadgeColor}">
                                             <TextBlock Text="{Binding StockStatus}" FontSize="11" Foreground="White"/>
                                         </Border>
                                     </Grid>
@@ -69,5 +68,4 @@
         </Border>
 
     </DockPanel>
-
 </UserControl>

@@ -1,0 +1,119 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:WMS.ViewModels.Pages"
+             x:Class="WMS.Views.Pages.AnalyticsPageView"
+             x:DataType="vm:AnalyticsPageViewModel"
+             x:CompileBindings="False">
+
+    <ScrollViewer Padding="32,28">
+        <StackPanel Spacing="28">
+
+            <!-- Header -->
+            <StackPanel Spacing="4">
+                <TextBlock Text="Analytics" FontSize="28" FontWeight="SemiBold"/>
+                <TextBlock Text="Live metrics from your warehouse data" Opacity="0.55" FontSize="14"/>
+            </StackPanel>
+
+            <!-- KPI row -->
+            <Grid ColumnDefinitions="*,*,*,*">
+                <Border Grid.Column="0" Margin="0,0,12,0" Padding="20,18" CornerRadius="10"
+                        Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Total Stock Value" FontSize="12" Opacity="0.6"/>
+                        <TextBlock Text="{Binding TotalStockValue, StringFormat={}{0:N2} PLN}" FontSize="20" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="1" Margin="0,0,12,0" Padding="20,18" CornerRadius="10"
+                        Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Avg Order Value" FontSize="12" Opacity="0.6"/>
+                        <TextBlock Text="{Binding AvgOrderValue, StringFormat={}{0:N2} PLN}" FontSize="20" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="2" Margin="0,0,12,0" Padding="20,18" CornerRadius="10"
+                        Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Issued Products (WZ)" FontSize="12" Opacity="0.6"/>
+                        <TextBlock Text="{Binding TurnoverProducts}" FontSize="20" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="3" Padding="20,18" CornerRadius="10"
+                        Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Active Suppliers" FontSize="12" Opacity="0.6"/>
+                        <TextBlock Text="{Binding SuppliersCount}" FontSize="20" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Charts row -->
+            <Grid ColumnDefinitions="*,*">
+
+                <!-- Stock by Category -->
+                <Border Grid.Column="0" Margin="0,0,12,0" Padding="20" CornerRadius="10"
+                        Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="Stock Units by Category" FontSize="16" FontWeight="SemiBold"/>
+                        <ItemsControl ItemsSource="{Binding StockByCategory}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Spacing="4" Margin="0,0,0,8">
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <TextBlock Text="{Binding Label}" FontSize="12" TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding ValueLabel}" FontSize="12" Opacity="0.7" Margin="8,0,0,0"/>
+                                        </Grid>
+                                        <Border CornerRadius="3" Height="12" HorizontalAlignment="Left"
+                                                Width="{Binding BarWidth}" Background="{Binding Color}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+                <!-- Orders by Status -->
+                <Border Grid.Column="1" Padding="20" CornerRadius="10"
+                        Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="Orders by Status" FontSize="16" FontWeight="SemiBold"/>
+                        <ItemsControl ItemsSource="{Binding OrdersByStatus}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Spacing="4" Margin="0,0,0,8">
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <TextBlock Text="{Binding Label}" FontSize="12"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding ValueLabel}" FontSize="12" Opacity="0.7" Margin="8,0,0,0"/>
+                                        </Grid>
+                                        <Border CornerRadius="3" Height="12" HorizontalAlignment="Left"
+                                                Width="{Binding BarWidth}" Background="{Binding Color}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Top Products by Stock Value -->
+            <Border Padding="20" CornerRadius="10"
+                    Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="Top Products by Stock Value" FontSize="16" FontWeight="SemiBold"/>
+                    <ItemsControl ItemsSource="{Binding TopProductsByValue}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid ColumnDefinitions="240,*,Auto" Margin="0,0,0,8">
+                                    <TextBlock Text="{Binding Label}" FontSize="12" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                    <Border Grid.Column="1" CornerRadius="3" Height="12" VerticalAlignment="Center"
+                                            HorizontalAlignment="Left" Width="{Binding BarWidth}" Background="{Binding Color}" Margin="12,0"/>
+                                    <TextBlock Grid.Column="2" Text="{Binding ValueLabel, StringFormat={}{0} PLN}" FontSize="12" Opacity="0.7" VerticalAlignment="Center"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

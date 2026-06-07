@@ -1,0 +1,71 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:WMS.ViewModels.Dialogs"
+        x:Class="WMS.Views.Dialogs.AddOrderDialog"
+        x:DataType="vm:AddOrderDialogViewModel"
+        x:CompileBindings="False"
+        Title="New Order"
+        Width="480" Height="480"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False">
+
+    <Grid RowDefinitions="*,Auto" Margin="24">
+
+        <ScrollViewer Grid.Row="0">
+            <StackPanel Spacing="14">
+
+                <TextBlock Text="New Order" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,6"/>
+
+                <!-- Order Type -->
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Order Type" FontSize="12" Opacity="0.6"/>
+                    <ComboBox ItemsSource="{Binding OrderTypeOptions}" SelectedItem="{Binding OrderType}" HorizontalAlignment="Stretch"/>
+                </StackPanel>
+
+                <!-- Customer -->
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Customer / Supplier *" FontSize="12" Opacity="0.6"/>
+                    <ComboBox ItemsSource="{Binding Customers}"
+                              SelectedItem="{Binding SelectedCustomer}"
+                              HorizontalAlignment="Stretch"
+                              DisplayMemberBinding="{Binding Name}"/>
+                </StackPanel>
+
+                <!-- Currency + Payment Method -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                    <StackPanel Grid.Column="0" Spacing="4">
+                        <TextBlock Text="Currency" FontSize="12" Opacity="0.6"/>
+                        <ComboBox ItemsSource="{Binding Currencies}" SelectedItem="{Binding Currency}" HorizontalAlignment="Stretch"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Spacing="4">
+                        <TextBlock Text="Payment Method" FontSize="12" Opacity="0.6"/>
+                        <ComboBox ItemsSource="{Binding PaymentMethods}" SelectedItem="{Binding PaymentMethod}" HorizontalAlignment="Stretch"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Due Date -->
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Due Date" FontSize="12" Opacity="0.6"/>
+                    <DatePicker SelectedDate="{Binding DueDate}" HorizontalAlignment="Stretch"/>
+                </StackPanel>
+
+                <!-- Notes -->
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Notes" FontSize="12" Opacity="0.6"/>
+                    <TextBox Text="{Binding Notes}" Watermark="Optional notes..." Height="70" AcceptsReturn="True"/>
+                </StackPanel>
+
+                <!-- Error -->
+                <TextBlock Text="{Binding ErrorMessage}" Foreground="#E05252" FontSize="12"
+                           IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Buttons -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10" Margin="0,16,0,0">
+            <Button Grid.Column="1" Content="Cancel" Click="Cancel_Click" Padding="20,8"/>
+            <Button Grid.Column="2" Content="Save"   Click="Save_Click"   Padding="20,8" Classes="accent"/>
+        </Grid>
+    </Grid>
+</Window>
