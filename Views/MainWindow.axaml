@@ -45,7 +45,11 @@
         </Menu>
 
         <!-- ── Content Area ─────────────────────────────────────────────────── -->
-        <TransitioningContentControl Content="{Binding CurrentPage}">
+        <TransitioningContentControl Content="{Binding CurrentPage}"
+                                     HorizontalAlignment="Stretch"
+                                     VerticalAlignment="Stretch"
+                                     HorizontalContentAlignment="Stretch"
+                                     VerticalContentAlignment="Stretch">
             <TransitioningContentControl.PageTransition>
                 <CrossFade Duration="0:0:0.16"/>
             </TransitioningContentControl.PageTransition>

@@ -5,59 +5,109 @@
              x:DataType="vm:CustomersPageViewModel"
              x:CompileBindings="False">
 
-    <DockPanel Margin="32,28">
+    <DockPanel>
 
         <!-- Header -->
-        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="0,0,0,16">
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="32,28,32,16">
             <StackPanel Spacing="4">
                 <TextBlock Text="Customers" FontSize="28" FontWeight="SemiBold"/>
                 <TextBlock Text="Customers, suppliers and trading partners" Opacity="0.55" FontSize="14"/>
             </StackPanel>
-            <Button Grid.Column="1" Content="+ New Customer" VerticalAlignment="Bottom" Padding="14,8" CornerRadius="6" Click="AddCustomer_Click"/>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Bottom">
+                <Button Content="Columns ▾" Padding="12,8" CornerRadius="6"
+                        Click="ToggleColumnPicker_Click"/>
+                <Button Content="+ New Customer" Padding="14,8" CornerRadius="6" Click="AddCustomer_Click"/>
+            </StackPanel>
         </Grid>
 
         <!-- Toolbar -->
-        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,200" Margin="0,0,0,14">
-            <TextBox Grid.Column="0" Watermark="Search name, tax ID or email…"
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,200" Margin="32,0,32,14">
+            <TextBox Grid.Column="0" PlaceholderText="Search name, tax ID or email…"
                      Text="{Binding SearchText}" Margin="0,0,10,0" CornerRadius="6"/>
             <ComboBox Grid.Column="1" ItemsSource="{Binding RoleFilters}"
                       SelectedItem="{Binding RoleFilter}" HorizontalAlignment="Stretch"/>
         </Grid>
 
-        <!-- Table -->
-        <Border CornerRadius="10" Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
-            <StackPanel>
-                <Border Padding="16,12" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="0,0,0,1">
-                    <Grid ColumnDefinitions="*,110,135,90,75,70">
-                        <TextBlock Text="Name"         FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
-                        <TextBlock Grid.Column="1" Text="Tax ID"      FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
-                        <TextBlock Grid.Column="2" Text="Email"        FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
-                        <TextBlock Grid.Column="3" Text="City"         FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
-                        <TextBlock Grid.Column="4" Text="Pay. days"    FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
-                        <TextBlock Grid.Column="5" Text="Role"         FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
-                    </Grid>
-                </Border>
-                <ItemsControl ItemsSource="{Binding Customers}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border Padding="16,13" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="0,0,0,1">
-                                <Grid ColumnDefinitions="*,110,135,90,75,70">
-                                    <StackPanel VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding Name}" FontSize="13"/>
-                                        <TextBlock Text="{Binding ShortName}" FontSize="11" Opacity="0.45"/>
-                                    </StackPanel>
-                                    <TextBlock Grid.Column="1" Text="{Binding TaxId}"   FontSize="12" Opacity="0.7" VerticalAlignment="Center"/>
-                                    <TextBlock Grid.Column="2" Text="{Binding Email}"   FontSize="12" Opacity="0.7" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
-                                    <TextBlock Grid.Column="3" Text="{Binding City}"    VerticalAlignment="Center"/>
-                                    <TextBlock Grid.Column="4" Text="{Binding PaymentTermDays, StringFormat={}{0} days}" VerticalAlignment="Center"/>
-                                    <TextBlock Grid.Column="5" Text="{Binding TypeLabel}" FontSize="11" Opacity="0.7" VerticalAlignment="Center"/>
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+        <!-- Column Picker Panel -->
+        <Border DockPanel.Dock="Top"
+                IsVisible="{Binding ColumnPickerOpen}"
+                Margin="32,0,32,10" Padding="16,14" CornerRadius="8"
+                Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+            <StackPanel Spacing="10">
+                <TextBlock Text="Visible Columns" FontSize="13" FontWeight="SemiBold"/>
+                <WrapPanel Orientation="Horizontal">
+                    <CheckBox Content="Short Name"    IsChecked="{Binding Columns.ShowShortName}"   Margin="0,0,16,6"/>
+                    <CheckBox Content="Tax ID"        IsChecked="{Binding Columns.ShowTaxId}"       Margin="0,0,16,6"/>
+                    <CheckBox Content="Email"         IsChecked="{Binding Columns.ShowEmail}"       Margin="0,0,16,6"/>
+                    <CheckBox Content="Phone"         IsChecked="{Binding Columns.ShowPhone}"       Margin="0,0,16,6"/>
+                    <CheckBox Content="City"          IsChecked="{Binding Columns.ShowCity}"        Margin="0,0,16,6"/>
+                    <CheckBox Content="Country"       IsChecked="{Binding Columns.ShowCountry}"     Margin="0,0,16,6"/>
+                    <CheckBox Content="Pay. Days"     IsChecked="{Binding Columns.ShowPaymentDays}" Margin="0,0,16,6"/>
+                    <CheckBox Content="Currency"      IsChecked="{Binding Columns.ShowCurrency}"    Margin="0,0,16,6"/>
+                    <CheckBox Content="Credit Limit"  IsChecked="{Binding Columns.ShowCreditLimit}" Margin="0,0,16,6"/>
+                    <CheckBox Content="Role"          IsChecked="{Binding Columns.ShowRole}"        Margin="0,0,16,6"/>
+                    <CheckBox Content="Notes"         IsChecked="{Binding Columns.ShowNotes}"       Margin="0,0,16,6"/>
+                </WrapPanel>
+                <Button Content="Save Column Layout" Padding="12,6" CornerRadius="6"
+                        Click="SaveColumns_Click"/>
             </StackPanel>
         </Border>
+
+        <!-- Table -->
+        <ScrollViewer Padding="32,0,32,28">
+            <Border CornerRadius="10" Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                <StackPanel>
+
+                    <!-- Header row -->
+                    <Border Padding="16,10" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="0,0,0,1">
+                        <StackPanel Orientation="Horizontal" Spacing="0">
+                            <TextBlock Text="Name"         Width="200" FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center"/>
+                            <TextBlock Text="Short Name"   Width="120" FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowShortName}"/>
+                            <TextBlock Text="Tax ID"       Width="110" FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowTaxId}"/>
+                            <TextBlock Text="Email"        Width="160" FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowEmail}"/>
+                            <TextBlock Text="Phone"        Width="120" FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowPhone}"/>
+                            <TextBlock Text="City"         Width="100" FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowCity}"/>
+                            <TextBlock Text="Country"      Width="80"  FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowCountry}"/>
+                            <TextBlock Text="Pay. Days"    Width="80"  FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowPaymentDays}"/>
+                            <TextBlock Text="Currency"     Width="80"  FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowCurrency}"/>
+                            <TextBlock Text="Credit Limit" Width="100" FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowCreditLimit}"/>
+                            <TextBlock Text="Role"         Width="80"  FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowRole}"/>
+                            <TextBlock Text="Notes"        Width="160" FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowNotes}"/>
+                            <TextBlock Text=""             Width="56"  FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Data rows -->
+                    <ItemsControl ItemsSource="{Binding Customers}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Padding="16,11" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="0,0,0,1">
+                                    <StackPanel Orientation="Horizontal" Spacing="0">
+                                        <StackPanel Width="200" VerticalAlignment="Center" Spacing="1">
+                                            <TextBlock Text="{Binding Name}" FontSize="13" TextTrimming="CharacterEllipsis"/>
+                                        </StackPanel>
+                                        <TextBlock Width="120" Text="{Binding ShortName}"       FontSize="11" Opacity="0.55" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowShortName}"/>
+                                        <TextBlock Width="110" Text="{Binding TaxId}"           FontSize="12" Opacity="0.7"  VerticalAlignment="Center" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowTaxId}"/>
+                                        <TextBlock Width="160" Text="{Binding Email}"           FontSize="12" Opacity="0.7"  VerticalAlignment="Center" TextTrimming="CharacterEllipsis" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowEmail}"/>
+                                        <TextBlock Width="120" Text="{Binding Phone}"           FontSize="12" Opacity="0.7"  VerticalAlignment="Center" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowPhone}"/>
+                                        <TextBlock Width="100" Text="{Binding City}"            FontSize="12"                VerticalAlignment="Center" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowCity}"/>
+                                        <TextBlock Width="80"  Text="{Binding Country}"         FontSize="12" Opacity="0.7"  VerticalAlignment="Center" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowCountry}"/>
+                                        <TextBlock Width="80"  Text="{Binding PaymentTermDays, StringFormat={}{0} days}" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowPaymentDays}"/>
+                                        <TextBlock Width="80"  Text="{Binding Currency}"        FontSize="12" Opacity="0.7"  VerticalAlignment="Center" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowCurrency}"/>
+                                        <TextBlock Width="100" Text="{Binding CreditLimit, StringFormat={}{0:N2}}" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowCreditLimit}"/>
+                                        <TextBlock Width="80"  Text="{Binding TypeLabel}"       FontSize="11" Opacity="0.7"  VerticalAlignment="Center" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowRole}"/>
+                                        <TextBlock Width="160" Text="{Binding Notes}"           FontSize="11" Opacity="0.55" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowNotes}"/>
+                                        <Button Width="56" Content="Edit" FontSize="11" Padding="6,3" CornerRadius="4"
+                                                VerticalAlignment="Center" Click="EditCustomer_Click"/>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                </StackPanel>
+            </Border>
+        </ScrollViewer>
 
     </DockPanel>
 </UserControl>

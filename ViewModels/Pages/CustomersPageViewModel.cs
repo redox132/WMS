@@ -19,6 +19,9 @@ public partial class CustomersPageViewModel : ViewModelBase
 
     public string[] RoleFilters { get; } = { "All", "Customer", "Supplier", "Customer / Supplier" };
 
+    [ObservableProperty] private bool _columnPickerOpen;
+    public CustomerColumnConfig Columns { get; } = CustomerColumnConfig.Load();
+
     public CustomersPageViewModel()
     {
         _all = AppServices.Customers.GetAll();

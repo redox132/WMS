@@ -5,15 +5,16 @@
              x:DataType="vm:DocumentsPageViewModel"
              x:CompileBindings="False">
 
-    <DockPanel Margin="32,28">
+    <DockPanel>
 
         <!-- Header -->
-        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="0,0,0,16">
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="32,28,32,16">
             <StackPanel Spacing="4">
                 <TextBlock Text="Warehouse Documents" FontSize="28" FontWeight="SemiBold"/>
                 <TextBlock Text="Goods Issue · Goods Receipt · Transfer · Internal movements" Opacity="0.55" FontSize="14"/>
             </StackPanel>
             <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Bottom">
+                <Button Content="Columns ▾"    Padding="12,7" CornerRadius="6" Click="ToggleColumnPicker_Click"/>
                 <Button Content="+ WZ Issue"    Padding="10,7" CornerRadius="6" Click="AddDocument_Click"/>
                 <Button Content="+ PZ Receipt"  Padding="10,7" CornerRadius="6" Click="AddDocument_Click"/>
                 <Button Content="+ MM Transfer" Padding="10,7" CornerRadius="6" Click="AddDocument_Click"/>
@@ -21,54 +22,94 @@
         </Grid>
 
         <!-- Legend -->
-        <WrapPanel DockPanel.Dock="Top" Margin="0,0,0,20" Orientation="Horizontal">
+        <WrapPanel DockPanel.Dock="Top" Margin="32,0,32,10" Orientation="Horizontal">
             <Border Margin="0,0,10,0" Padding="8,4" CornerRadius="4" Background="#1565C0"><TextBlock Text="WZ – Goods Issue"     FontSize="11" Foreground="White"/></Border>
             <Border Margin="0,0,10,0" Padding="8,4" CornerRadius="4" Background="#2E7D32"><TextBlock Text="PZ – Goods Receipt"   FontSize="11" Foreground="White"/></Border>
             <Border Margin="0,0,10,0" Padding="8,4" CornerRadius="4" Background="#E65100"><TextBlock Text="MM – Transfer"        FontSize="11" Foreground="White"/></Border>
             <Border Margin="0,0,10,0" Padding="8,4" CornerRadius="4" Background="#6A1B9A"><TextBlock Text="PW – Internal Receipt" FontSize="11" Foreground="White"/></Border>
-            <Border                   Padding="8,4" CornerRadius="4" Background="#B71C1C"><TextBlock Text="RW – Internal Issue"   FontSize="11" Foreground="White"/></Border>
+            <Border               Padding="8,4" CornerRadius="4" Background="#B71C1C"><TextBlock Text="RW – Internal Issue"   FontSize="11" Foreground="White"/></Border>
         </WrapPanel>
 
-        <!-- Table -->
-        <Border CornerRadius="10"
+        <!-- Column Picker Panel -->
+        <Border DockPanel.Dock="Top"
+                IsVisible="{Binding ColumnPickerOpen}"
+                Margin="32,0,32,10" Padding="16,14" CornerRadius="8"
                 Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
-            <StackPanel>
-                <Border Padding="16,12"
-                        BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-                        BorderThickness="0,0,0,1">
-                    <Grid ColumnDefinitions="46,160,105,*,90,85">
-                        <TextBlock Text="Type"       FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
-                        <TextBlock Grid.Column="1" Text="Number"     FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
-                        <TextBlock Grid.Column="2" Text="Date"       FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
-                        <TextBlock Grid.Column="3" Text="Movement"   FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
-                        <TextBlock Grid.Column="4" Text="Value (gross)" FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
-                        <TextBlock Grid.Column="5" Text="Status"     FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
-                    </Grid>
-                </Border>
-                <ItemsControl ItemsSource="{Binding Documents}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border Padding="16,13"
-                                    BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
-                                    BorderThickness="0,0,0,1">
-                                <Grid ColumnDefinitions="46,160,105,*,90,85">
-                                    <Border CornerRadius="4" Padding="5,3" Background="{Binding TypeColor}" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                        <TextBlock Text="{Binding Type}" FontSize="11" FontWeight="Bold" Foreground="White"/>
-                                    </Border>
-                                    <TextBlock Grid.Column="1" Text="{Binding Number}"             FontWeight="Medium" VerticalAlignment="Center" FontSize="12"/>
-                                    <TextBlock Grid.Column="2" Text="{Binding Date, StringFormat={}{0:dd MMM yyyy}}" Opacity="0.7" VerticalAlignment="Center"/>
-                                    <TextBlock Grid.Column="3" Text="{Binding MovementDescription}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
-                                    <TextBlock Grid.Column="4" Text="{Binding GrossAmount, StringFormat={}{0:N2}}"   FontWeight="Medium" VerticalAlignment="Center"/>
-                                    <Border Grid.Column="5" CornerRadius="4" Padding="6,3" Background="{Binding StatusColor}" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding StatusLabel}" FontSize="11" Foreground="White"/>
-                                    </Border>
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+            <StackPanel Spacing="10">
+                <TextBlock Text="Visible Columns" FontSize="13" FontWeight="SemiBold"/>
+                <WrapPanel Orientation="Horizontal">
+                    <CheckBox Content="Date"         IsChecked="{Binding Columns.ShowDate}"        Margin="0,0,16,6"/>
+                    <CheckBox Content="Contractor"   IsChecked="{Binding Columns.ShowContractor}"  Margin="0,0,16,6"/>
+                    <CheckBox Content="Movement"     IsChecked="{Binding Columns.ShowMovement}"    Margin="0,0,16,6"/>
+                    <CheckBox Content="External Ref" IsChecked="{Binding Columns.ShowExternalRef}" Margin="0,0,16,6"/>
+                    <CheckBox Content="Net Amount"   IsChecked="{Binding Columns.ShowNetAmount}"   Margin="0,0,16,6"/>
+                    <CheckBox Content="Gross Amount" IsChecked="{Binding Columns.ShowGrossAmount}" Margin="0,0,16,6"/>
+                    <CheckBox Content="Status"       IsChecked="{Binding Columns.ShowStatus}"      Margin="0,0,16,6"/>
+                    <CheckBox Content="Created By"   IsChecked="{Binding Columns.ShowCreatedBy}"   Margin="0,0,16,6"/>
+                </WrapPanel>
+                <Button Content="Save Column Layout" Padding="12,6" CornerRadius="6"
+                        Click="SaveColumns_Click"/>
             </StackPanel>
         </Border>
+
+        <!-- Table -->
+        <ScrollViewer Padding="32,0,32,28">
+            <Border CornerRadius="10" Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                <StackPanel>
+
+                    <!-- Header row -->
+                    <Border Padding="16,10" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="0,0,0,1">
+                        <StackPanel Orientation="Horizontal" Spacing="0">
+                            <TextBlock Text="Type"       Width="50"  FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center"/>
+                            <TextBlock Text="Number"     Width="160" FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center"/>
+                            <TextBlock Text="Date"       Width="110" FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowDate}"/>
+                            <TextBlock Text="Contractor" Width="160" FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowContractor}"/>
+                            <TextBlock Text="Movement"   Width="180" FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowMovement}"/>
+                            <TextBlock Text="Ext. Ref"   Width="120" FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowExternalRef}"/>
+                            <TextBlock Text="Net"        Width="95"  FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowNetAmount}"/>
+                            <TextBlock Text="Gross"      Width="95"  FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowGrossAmount}"/>
+                            <TextBlock Text="Status"     Width="90"  FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowStatus}"/>
+                            <TextBlock Text="Created By" Width="110" FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowCreatedBy}"/>
+                            <TextBlock Text=""           Width="56"  FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Data rows -->
+                    <ItemsControl ItemsSource="{Binding Documents}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Padding="16,11" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="0,0,0,1"
+                                        DoubleTapped="DocumentRow_DoubleTapped" Cursor="Hand">
+                                    <StackPanel Orientation="Horizontal" Spacing="0">
+                                        <Border Width="50" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                            <Border CornerRadius="4" Padding="5,3" Background="{Binding TypeColor}" HorizontalAlignment="Left">
+                                                <TextBlock Text="{Binding Type}" FontSize="11" FontWeight="Bold" Foreground="White"/>
+                                            </Border>
+                                        </Border>
+                                        <TextBlock Width="160" Text="{Binding Number}"             FontWeight="Medium" FontSize="12" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Width="110" Text="{Binding Date, StringFormat={}{0:dd MMM yyyy}}" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowDate}"/>
+                                        <TextBlock Width="160" Text="{Binding ContractorName}"     FontSize="12" Opacity="0.7" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowContractor}"/>
+                                        <TextBlock Width="180" Text="{Binding MovementDescription}" FontSize="12" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowMovement}"/>
+                                        <TextBlock Width="120" Text="{Binding ExternalReference}"  FontSize="11" Opacity="0.65" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowExternalRef}"/>
+                                        <TextBlock Width="95"  Text="{Binding NetAmount,   StringFormat={}{0:N2}}" FontSize="12" VerticalAlignment="Center" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowNetAmount}"/>
+                                        <TextBlock Width="95"  Text="{Binding GrossAmount, StringFormat={}{0:N2}}" FontSize="12" FontWeight="Medium" VerticalAlignment="Center" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowGrossAmount}"/>
+                                        <Border Width="90" VerticalAlignment="Center" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowStatus}">
+                                            <Border CornerRadius="4" Padding="6,3" Background="{Binding StatusColor}" HorizontalAlignment="Left">
+                                                <TextBlock Text="{Binding StatusLabel}" FontSize="11" Foreground="White"/>
+                                            </Border>
+                                        </Border>
+                                        <TextBlock Width="110" Text="{Binding CreatedBy}"          FontSize="11" Opacity="0.55" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowCreatedBy}"/>
+                                        <Button Width="56" Content="Edit" FontSize="11" Padding="6,3" CornerRadius="4"
+                                                VerticalAlignment="Center" Click="EditDocument_Click"/>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                </StackPanel>
+            </Border>
+        </ScrollViewer>
 
     </DockPanel>
 

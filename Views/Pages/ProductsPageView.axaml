@@ -5,20 +5,25 @@
              x:DataType="vm:ProductsPageViewModel"
              x:CompileBindings="False">
 
-    <DockPanel Margin="32,28">
+    <DockPanel>
 
         <!-- Header -->
-        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="0,0,0,16">
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="32,28,32,16">
             <StackPanel Spacing="4">
                 <TextBlock Text="Products" FontSize="28" FontWeight="SemiBold"/>
                 <TextBlock Text="Product catalogue and stock levels" Opacity="0.55" FontSize="14"/>
             </StackPanel>
-            <Button Grid.Column="1" Content="+ New Product" VerticalAlignment="Bottom" Padding="14,8" CornerRadius="6" Click="AddProduct_Click"/>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Bottom">
+                <Button Content="Columns ▾" Padding="12,8" CornerRadius="6"
+                        Click="ToggleColumnPicker_Click"/>
+                <Button Content="+ New Product" Padding="14,8" CornerRadius="6"
+                        Click="AddProduct_Click"/>
+            </StackPanel>
         </Grid>
 
         <!-- Toolbar -->
-        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,160,140,Auto" Margin="0,0,0,14">
-            <TextBox Grid.Column="0" Watermark="Search name, SKU or barcode…"
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,160,140" Margin="32,0,32,14">
+            <TextBox Grid.Column="0" PlaceholderText="Search name, SKU or barcode…"
                      Text="{Binding SearchText}" Margin="0,0,10,0" CornerRadius="6"/>
             <ComboBox Grid.Column="1" ItemsSource="{Binding Categories}"
                       SelectedItem="{Binding CategoryFilter}" Margin="0,0,10,0" HorizontalAlignment="Stretch"/>
@@ -26,46 +31,95 @@
                           IsChecked="{Binding LowStockOnly}" HorizontalAlignment="Stretch" CornerRadius="6"/>
         </Grid>
 
+        <!-- Column Picker Panel -->
+        <Border DockPanel.Dock="Top"
+                IsVisible="{Binding ColumnPickerOpen}"
+                Margin="32,0,32,10" Padding="16,14" CornerRadius="8"
+                Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+            <StackPanel Spacing="10">
+                <TextBlock Text="Visible Columns" FontSize="13" FontWeight="SemiBold"/>
+                <WrapPanel Orientation="Horizontal">
+                    <CheckBox Content="Barcode"        IsChecked="{Binding Columns.ShowBarcode}"       Margin="0,0,16,6"/>
+                    <CheckBox Content="SKU"            IsChecked="{Binding Columns.ShowSku}"           Margin="0,0,16,6"/>
+                    <CheckBox Content="Category"       IsChecked="{Binding Columns.ShowCategory}"      Margin="0,0,16,6"/>
+                    <CheckBox Content="Unit"           IsChecked="{Binding Columns.ShowUnit}"          Margin="0,0,16,6"/>
+                    <CheckBox Content="Stock"          IsChecked="{Binding Columns.ShowStock}"         Margin="0,0,16,6"/>
+                    <CheckBox Content="Min Stock"      IsChecked="{Binding Columns.ShowMinStock}"      Margin="0,0,16,6"/>
+                    <CheckBox Content="Buy Price"      IsChecked="{Binding Columns.ShowPurchasePrice}" Margin="0,0,16,6"/>
+                    <CheckBox Content="Sell Price"     IsChecked="{Binding Columns.ShowSalePrice}"     Margin="0,0,16,6"/>
+                    <CheckBox Content="VAT %"          IsChecked="{Binding Columns.ShowVatRate}"       Margin="0,0,16,6"/>
+                    <CheckBox Content="Location"       IsChecked="{Binding Columns.ShowLocation}"      Margin="0,0,16,6"/>
+                    <CheckBox Content="Status"         IsChecked="{Binding Columns.ShowStatus}"        Margin="0,0,16,6"/>
+                    <CheckBox Content="Service"        IsChecked="{Binding Columns.ShowIsService}"     Margin="0,0,16,6"/>
+                    <CheckBox Content="Weight"         IsChecked="{Binding Columns.ShowWeight}"        Margin="0,0,16,6"/>
+                </WrapPanel>
+                <Button Content="Save Column Layout" Padding="12,6" CornerRadius="6"
+                        Click="SaveColumns_Click"/>
+            </StackPanel>
+        </Border>
+
         <!-- Table -->
-        <Border CornerRadius="10" Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
-            <ScrollViewer>
+        <ScrollViewer Padding="32,0,32,28">
+            <Border CornerRadius="10" Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
                 <StackPanel>
-                    <Border Padding="16,12" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="0,0,0,1">
-                        <Grid ColumnDefinitions="*,95,55,60,88,95,72">
-                            <TextBlock Text="Name / Barcode"  FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
-                            <TextBlock Grid.Column="1" Text="SKU"        FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
-                            <TextBlock Grid.Column="2" Text="Unit"       FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
-                            <TextBlock Grid.Column="3" Text="Stock"      FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
-                            <TextBlock Grid.Column="4" Text="Buy Price"  FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
-                            <TextBlock Grid.Column="5" Text="Sell Price" FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
-                            <TextBlock Grid.Column="6" Text="Status"     FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
-                        </Grid>
+
+                    <!-- Header row -->
+                    <Border Padding="16,10" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="0,0,0,1">
+                        <StackPanel Orientation="Horizontal" Spacing="0">
+                            <!-- Name — always visible, flexible: fill remaining space via stretching last -->
+                            <TextBlock Text="Name"          Width="200" FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center"/>
+                            <TextBlock Text="Barcode"       Width="110" FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowBarcode}"/>
+                            <TextBlock Text="SKU"           Width="95"  FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowSku}"/>
+                            <TextBlock Text="Category"      Width="120" FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowCategory}"/>
+                            <TextBlock Text="Unit"          Width="55"  FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowUnit}"/>
+                            <TextBlock Text="Stock"         Width="65"  FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowStock}"/>
+                            <TextBlock Text="Min Stock"     Width="75"  FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowMinStock}"/>
+                            <TextBlock Text="Buy Price"     Width="90"  FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowPurchasePrice}"/>
+                            <TextBlock Text="Sell Price"    Width="90"  FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowSalePrice}"/>
+                            <TextBlock Text="VAT %"         Width="55"  FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowVatRate}"/>
+                            <TextBlock Text="Location"      Width="110" FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowLocation}"/>
+                            <TextBlock Text="Status"        Width="80"  FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowStatus}"/>
+                            <TextBlock Text="Service"       Width="65"  FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowIsService}"/>
+                            <TextBlock Text="Weight"        Width="65"  FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowWeight}"/>
+                            <TextBlock Text=""              Width="56"  FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center"/>
+                        </StackPanel>
                     </Border>
+
+                    <!-- Data rows -->
                     <ItemsControl ItemsSource="{Binding Products}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border Padding="16,13" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="0,0,0,1">
-                                    <Grid ColumnDefinitions="*,95,55,60,88,95,72">
-                                        <StackPanel VerticalAlignment="Center">
-                                            <TextBlock Text="{Binding Name}" FontSize="13" TextWrapping="Wrap"/>
-                                            <TextBlock Text="{Binding Barcode}" FontSize="11" Opacity="0.45"/>
+                                <Border Padding="16,11" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="0,0,0,1">
+                                    <StackPanel Orientation="Horizontal" Spacing="0">
+                                        <StackPanel Width="200" VerticalAlignment="Center" Spacing="1">
+                                            <TextBlock Text="{Binding Name}" FontSize="13" TextTrimming="CharacterEllipsis"/>
                                         </StackPanel>
-                                        <TextBlock Grid.Column="1" Text="{Binding SKU}"          FontSize="11" Opacity="0.65" VerticalAlignment="Center" TextWrapping="Wrap"/>
-                                        <TextBlock Grid.Column="2" Text="{Binding Unit}"          VerticalAlignment="Center"/>
-                                        <TextBlock Grid.Column="3" Text="{Binding StockLevel}"    VerticalAlignment="Center" Foreground="{Binding StockLevelColor}"/>
-                                        <TextBlock Grid.Column="4" Text="{Binding PurchasePrice, StringFormat={}{0:N2}}" FontSize="13" VerticalAlignment="Center"/>
-                                        <TextBlock Grid.Column="5" Text="{Binding SalePrice1,    StringFormat={}{0:N2}}" FontSize="13" VerticalAlignment="Center"/>
-                                        <Border Grid.Column="6" VerticalAlignment="Center" CornerRadius="4" Padding="6,3" Background="{Binding StatusBadgeColor}">
+                                        <TextBlock Width="110" Text="{Binding Barcode}"          FontSize="11" Opacity="0.55" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowBarcode}"/>
+                                        <TextBlock Width="95"  Text="{Binding SKU}"              FontSize="11" Opacity="0.65" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowSku}"/>
+                                        <TextBlock Width="120" Text="{Binding CategoryName}"     FontSize="12" Opacity="0.7"  VerticalAlignment="Center" TextTrimming="CharacterEllipsis" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowCategory}"/>
+                                        <TextBlock Width="55"  Text="{Binding Unit}"             FontSize="12"                VerticalAlignment="Center" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowUnit}"/>
+                                        <TextBlock Width="65"  Text="{Binding StockLevel}"       FontSize="12" Foreground="{Binding StockLevelColor}" VerticalAlignment="Center" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowStock}"/>
+                                        <TextBlock Width="75"  Text="{Binding MinStockLevel}"    FontSize="12" Opacity="0.7"  VerticalAlignment="Center" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowMinStock}"/>
+                                        <TextBlock Width="90"  Text="{Binding PurchasePrice, StringFormat={}{0:N2}}" FontSize="12" VerticalAlignment="Center" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowPurchasePrice}"/>
+                                        <TextBlock Width="90"  Text="{Binding SalePrice1,    StringFormat={}{0:N2}}" FontSize="12" VerticalAlignment="Center" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowSalePrice}"/>
+                                        <TextBlock Width="55"  Text="{Binding VatRateSale,   StringFormat={}{0:N0}%}" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowVatRate}"/>
+                                        <TextBlock Width="110" Text="{Binding WarehouseLocation}" FontSize="11" Opacity="0.65" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowLocation}"/>
+                                        <Border Width="80" VerticalAlignment="Center" CornerRadius="4" Padding="6,3" Background="{Binding StatusBadgeColor}" HorizontalAlignment="Left" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowStatus}">
                                             <TextBlock Text="{Binding StockStatus}" FontSize="11" Foreground="White"/>
                                         </Border>
-                                    </Grid>
+                                        <TextBlock Width="65"  Text="{Binding IsService}"      FontSize="11" Opacity="0.6" VerticalAlignment="Center" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowIsService}"/>
+                                        <TextBlock Width="65"  Text="{Binding Weight, StringFormat={}{0:N2}}" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowWeight}"/>
+                                        <Button Width="56" Content="Edit" FontSize="11" Padding="6,3" CornerRadius="4"
+                                                VerticalAlignment="Center" Click="EditProduct_Click"/>
+                                    </StackPanel>
                                 </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
+
                 </StackPanel>
-            </ScrollViewer>
-        </Border>
+            </Border>
+        </ScrollViewer>
 
     </DockPanel>
 </UserControl>

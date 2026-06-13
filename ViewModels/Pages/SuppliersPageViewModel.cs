@@ -15,6 +15,8 @@ public partial class SuppliersPageViewModel : ViewModelBase
     public ObservableCollection<Customer> Suppliers { get; } = new();
 
     [ObservableProperty] private string _searchText = "";
+    [ObservableProperty] private bool   _columnPickerOpen;
+    public SupplierColumnConfig Columns { get; } = SupplierColumnConfig.Load();
 
     public SuppliersPageViewModel()
     {

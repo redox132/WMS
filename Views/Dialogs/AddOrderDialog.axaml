@@ -52,7 +52,7 @@
                 <!-- Notes -->
                 <StackPanel Spacing="4">
                     <TextBlock Text="Notes" FontSize="12" Opacity="0.6"/>
-                    <TextBox Text="{Binding Notes}" Watermark="Optional notes..." Height="70" AcceptsReturn="True"/>
+                    <TextBox Text="{Binding Notes}" PlaceholderText="Optional notes..." Height="70" AcceptsReturn="True"/>
                 </StackPanel>
 
                 <!-- Error -->

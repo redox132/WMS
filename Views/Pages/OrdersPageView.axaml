@@ -5,20 +5,24 @@
              x:DataType="vm:OrdersPageViewModel"
              x:CompileBindings="False">
 
-    <DockPanel Margin="32,28">
+    <DockPanel>
 
         <!-- Header -->
-        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="0,0,0,16">
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="32,28,32,16">
             <StackPanel Spacing="4">
                 <TextBlock Text="Orders" FontSize="28" FontWeight="SemiBold"/>
                 <TextBlock Text="Sales orders (SO) and purchase orders (PO)" Opacity="0.55" FontSize="14"/>
             </StackPanel>
-            <Button Grid.Column="1" Content="+ New Order" VerticalAlignment="Bottom" Padding="14,8" CornerRadius="6" Click="AddOrder_Click"/>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Bottom">
+                <Button Content="Columns ▾" Padding="12,8" CornerRadius="6"
+                        Click="ToggleColumnPicker_Click"/>
+                <Button Content="+ New Order" Padding="14,8" CornerRadius="6" Click="AddOrder_Click"/>
+            </StackPanel>
         </Grid>
 
         <!-- Toolbar -->
-        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,160,180" Margin="0,0,0,14">
-            <TextBox Grid.Column="0" Watermark="Search order number or customer…"
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,160,180" Margin="32,0,32,14">
+            <TextBox Grid.Column="0" PlaceholderText="Search order number or customer…"
                      Text="{Binding SearchText}" Margin="0,0,10,0" CornerRadius="6"/>
             <ComboBox Grid.Column="1" ItemsSource="{Binding TypeFilters}"
                       SelectedItem="{Binding TypeFilter}" Margin="0,0,10,0" HorizontalAlignment="Stretch"/>
@@ -26,41 +30,91 @@
                       SelectedItem="{Binding StatusFilter}" HorizontalAlignment="Stretch"/>
         </Grid>
 
-        <!-- Table -->
-        <Border CornerRadius="10" Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
-            <StackPanel>
-                <Border Padding="16,12" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="0,0,0,1">
-                    <Grid ColumnDefinitions="44,150,*,105,105,90">
-                        <TextBlock Text="Type"           FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
-                        <TextBlock Grid.Column="1" Text="Number"         FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
-                        <TextBlock Grid.Column="2" Text="Customer"       FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
-                        <TextBlock Grid.Column="3" Text="Date"           FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
-                        <TextBlock Grid.Column="4" Text="Value (gross)"  FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
-                        <TextBlock Grid.Column="5" Text="Status"         FontWeight="SemiBold" FontSize="12" Opacity="0.7"/>
-                    </Grid>
-                </Border>
-                <ItemsControl ItemsSource="{Binding Orders}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border Padding="16,13" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="0,0,0,1">
-                                <Grid ColumnDefinitions="44,150,*,105,105,90">
-                                    <Border CornerRadius="4" Padding="5,2" Background="{Binding TypeColor}" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                        <TextBlock Text="{Binding TypeLabel}" FontSize="10" FontWeight="Bold" Foreground="White"/>
-                                    </Border>
-                                    <TextBlock Grid.Column="1" Text="{Binding Number}"      FontWeight="Medium" VerticalAlignment="Center"/>
-                                    <TextBlock Grid.Column="2" Text="{Binding CustomerName}" VerticalAlignment="Center"/>
-                                    <TextBlock Grid.Column="3" Text="{Binding OrderDate, StringFormat={}{0:dd MMM yyyy}}" Opacity="0.7" VerticalAlignment="Center"/>
-                                    <TextBlock Grid.Column="4" Text="{Binding GrossAmount,  StringFormat={}{0:N2}}" FontWeight="Medium" VerticalAlignment="Center"/>
-                                    <Border Grid.Column="5" CornerRadius="4" Padding="6,3" Background="{Binding StatusColor}" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding StatusLabel}" FontSize="11" Foreground="White"/>
-                                    </Border>
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+        <!-- Column Picker Panel -->
+        <Border DockPanel.Dock="Top"
+                IsVisible="{Binding ColumnPickerOpen}"
+                Margin="32,0,32,10" Padding="16,14" CornerRadius="8"
+                Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+            <StackPanel Spacing="10">
+                <TextBlock Text="Visible Columns" FontSize="13" FontWeight="SemiBold"/>
+                <WrapPanel Orientation="Horizontal">
+                    <CheckBox Content="Customer"     IsChecked="{Binding Columns.ShowCustomer}"    Margin="0,0,16,6"/>
+                    <CheckBox Content="Date"         IsChecked="{Binding Columns.ShowDate}"        Margin="0,0,16,6"/>
+                    <CheckBox Content="Due Date"     IsChecked="{Binding Columns.ShowDueDate}"     Margin="0,0,16,6"/>
+                    <CheckBox Content="Delivery"     IsChecked="{Binding Columns.ShowDeliveryDate}" Margin="0,0,16,6"/>
+                    <CheckBox Content="Payment"      IsChecked="{Binding Columns.ShowPayment}"     Margin="0,0,16,6"/>
+                    <CheckBox Content="Currency"     IsChecked="{Binding Columns.ShowCurrency}"    Margin="0,0,16,6"/>
+                    <CheckBox Content="Net Amount"   IsChecked="{Binding Columns.ShowNetAmount}"   Margin="0,0,16,6"/>
+                    <CheckBox Content="Gross Amount" IsChecked="{Binding Columns.ShowGrossAmount}" Margin="0,0,16,6"/>
+                    <CheckBox Content="Discount %"   IsChecked="{Binding Columns.ShowDiscount}"    Margin="0,0,16,6"/>
+                    <CheckBox Content="Tracking"     IsChecked="{Binding Columns.ShowTracking}"    Margin="0,0,16,6"/>
+                    <CheckBox Content="Status"       IsChecked="{Binding Columns.ShowStatus}"      Margin="0,0,16,6"/>
+                </WrapPanel>
+                <Button Content="Save Column Layout" Padding="12,6" CornerRadius="6"
+                        Click="SaveColumns_Click"/>
             </StackPanel>
         </Border>
+
+        <!-- Table -->
+        <ScrollViewer Padding="32,0,32,28">
+            <Border CornerRadius="10" Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                <StackPanel>
+
+                    <!-- Header row -->
+                    <Border Padding="16,10" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="0,0,0,1">
+                        <StackPanel Orientation="Horizontal" Spacing="0">
+                            <TextBlock Text="Type"         Width="50"  FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center"/>
+                            <TextBlock Text="Number"       Width="160" FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center"/>
+                            <TextBlock Text="Customer"     Width="180" FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowCustomer}"/>
+                            <TextBlock Text="Date"         Width="110" FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowDate}"/>
+                            <TextBlock Text="Due Date"     Width="110" FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowDueDate}"/>
+                            <TextBlock Text="Delivery"     Width="110" FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowDeliveryDate}"/>
+                            <TextBlock Text="Payment"      Width="110" FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowPayment}"/>
+                            <TextBlock Text="Currency"     Width="80"  FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowCurrency}"/>
+                            <TextBlock Text="Net"          Width="95"  FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowNetAmount}"/>
+                            <TextBlock Text="Gross"        Width="95"  FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowGrossAmount}"/>
+                            <TextBlock Text="Discount %"   Width="80"  FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowDiscount}"/>
+                            <TextBlock Text="Tracking"     Width="130" FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowTracking}"/>
+                            <TextBlock Text="Status"       Width="90"  FontWeight="SemiBold" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding Columns.ShowStatus}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Data rows -->
+                    <ItemsControl ItemsSource="{Binding Orders}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Padding="16,11" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="0,0,0,1">
+                                    <StackPanel Orientation="Horizontal" Spacing="0">
+                                        <Border Width="50" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                            <Border CornerRadius="4" Padding="5,2" Background="{Binding TypeColor}" HorizontalAlignment="Left">
+                                                <TextBlock Text="{Binding TypeLabel}" FontSize="10" FontWeight="Bold" Foreground="White"/>
+                                            </Border>
+                                        </Border>
+                                        <TextBlock Width="160" Text="{Binding Number}"      FontWeight="Medium" FontSize="12" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Width="180" Text="{Binding CustomerName}" FontSize="12" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowCustomer}"/>
+                                        <TextBlock Width="110" Text="{Binding OrderDate,    StringFormat={}{0:dd MMM yyyy}}" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowDate}"/>
+                                        <TextBlock Width="110" Text="{Binding DueDate,      StringFormat={}{0:dd MMM yyyy}}" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowDueDate}"/>
+                                        <TextBlock Width="110" Text="{Binding DeliveryDate, StringFormat={}{0:dd MMM yyyy}}" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowDeliveryDate}"/>
+                                        <TextBlock Width="110" Text="{Binding PaymentMethod}" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowPayment}"/>
+                                        <TextBlock Width="80"  Text="{Binding Currency}"     FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowCurrency}"/>
+                                        <TextBlock Width="95"  Text="{Binding NetAmount,   StringFormat={}{0:N2}}" FontSize="12" VerticalAlignment="Center" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowNetAmount}"/>
+                                        <TextBlock Width="95"  Text="{Binding GrossAmount, StringFormat={}{0:N2}}" FontSize="12" FontWeight="Medium" VerticalAlignment="Center" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowGrossAmount}"/>
+                                        <TextBlock Width="80"  Text="{Binding DiscountPercent, StringFormat={}{0:N1}%}" FontSize="12" Opacity="0.7" VerticalAlignment="Center" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowDiscount}"/>
+                                        <TextBlock Width="130" Text="{Binding TrackingNumber}" FontSize="11" Opacity="0.65" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowTracking}"/>
+                                        <Border Width="90" VerticalAlignment="Center" IsVisible="{Binding $parent[ItemsControl].DataContext.Columns.ShowStatus}">
+                                            <Border CornerRadius="4" Padding="6,3" Background="{Binding StatusColor}" HorizontalAlignment="Left">
+                                                <TextBlock Text="{Binding StatusLabel}" FontSize="11" Foreground="White"/>
+                                            </Border>
+                                        </Border>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                </StackPanel>
+            </Border>
+        </ScrollViewer>
 
     </DockPanel>
 </UserControl>

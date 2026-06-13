@@ -19,24 +19,24 @@
                 <!-- Name -->
                 <StackPanel Spacing="4">
                     <TextBlock Text="Name *" FontSize="12" Opacity="0.6"/>
-                    <TextBox Text="{Binding Name}" Watermark="Product name"/>
+                    <TextBox Text="{Binding Name}" PlaceholderText="Product name"/>
                 </StackPanel>
 
                 <!-- SKU -->
                 <StackPanel Spacing="4">
                     <TextBlock Text="SKU *" FontSize="12" Opacity="0.6"/>
-                    <TextBox Text="{Binding SKU}" Watermark="Unique stock-keeping unit"/>
+                    <TextBox Text="{Binding SKU}" PlaceholderText="Unique stock-keeping unit"/>
                 </StackPanel>
 
                 <!-- Category + Unit -->
                 <Grid ColumnDefinitions="*,140" ColumnSpacing="12">
                     <StackPanel Grid.Column="0" Spacing="4">
                         <TextBlock Text="Category" FontSize="12" Opacity="0.6"/>
-                        <TextBox Text="{Binding CategoryName}" Watermark="e.g. Electronics"/>
+                        <TextBox Text="{Binding CategoryName}" PlaceholderText="e.g. Electronics"/>
                     </StackPanel>
                     <StackPanel Grid.Column="1" Spacing="4">
                         <TextBlock Text="Unit" FontSize="12" Opacity="0.6"/>
-                        <TextBox Text="{Binding Unit}" Watermark="pcs"/>
+                        <TextBox Text="{Binding Unit}" PlaceholderText="pcs"/>
                     </StackPanel>
                 </Grid>
 
@@ -72,7 +72,7 @@
                     </StackPanel>
                     <StackPanel Grid.Column="1" Spacing="4">
                         <TextBlock Text="Warehouse Location" FontSize="12" Opacity="0.6"/>
-                        <TextBox Text="{Binding WarehouseLocation}" Watermark="e.g. A-01-03"/>
+                        <TextBox Text="{Binding WarehouseLocation}" PlaceholderText="e.g. A-01-03"/>
                     </StackPanel>
                 </Grid>
 

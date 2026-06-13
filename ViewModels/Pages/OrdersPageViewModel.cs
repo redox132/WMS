@@ -21,6 +21,9 @@ public partial class OrdersPageViewModel : ViewModelBase
     public string[] StatusFilters { get; } = { "All", "New", "Confirmed", "In Progress", "Shipped", "Delivered", "Cancelled" };
     public string[] TypeFilters   { get; } = { "All", "Sales Order", "Purchase Order" };
 
+    [ObservableProperty] private bool _columnPickerOpen;
+    public OrderColumnConfig Columns { get; } = OrderColumnConfig.Load();
+
     public OrdersPageViewModel()
     {
         _all = AppServices.Orders.GetAll();

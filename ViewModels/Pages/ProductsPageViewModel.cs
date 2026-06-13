@@ -17,8 +17,10 @@ public partial class ProductsPageViewModel : ViewModelBase
     [ObservableProperty] private string _searchText = "";
     [ObservableProperty] private string _categoryFilter = "All";
     [ObservableProperty] private bool   _lowStockOnly;
+    [ObservableProperty] private bool   _columnPickerOpen;
 
     public string[] Categories { get; }
+    public ProductColumnConfig Columns { get; } = ProductColumnConfig.Load();
 
     public ProductsPageViewModel()
     {

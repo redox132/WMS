@@ -21,6 +21,18 @@ public partial class OrdersPageView : UserControl
             _ = OpenAndRefresh(new AddOrderDialog().ShowDialog<bool?>(w));
     }
 
+    private OrdersPageViewModel? Vm => DataContext as OrdersPageViewModel;
+
+    private void ToggleColumnPicker_Click(object? sender, RoutedEventArgs e)
+    {
+        if (Vm is { } vm) vm.ColumnPickerOpen = !vm.ColumnPickerOpen;
+    }
+
+    private void SaveColumns_Click(object? sender, RoutedEventArgs e)
+    {
+        if (Vm is { } vm) { vm.Columns.Save(); vm.ColumnPickerOpen = false; }
+    }
+
     private async Task OpenAndRefresh(Task<bool?> dialogTask)
     {
         if (await dialogTask == true)

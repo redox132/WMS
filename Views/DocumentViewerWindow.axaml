@@ -1,0 +1,232 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:WMS.ViewModels"
+        x:Class="WMS.Views.DocumentViewerWindow"
+        x:DataType="vm:DocumentViewerViewModel"
+        x:CompileBindings="False"
+        Title="Document Viewer"
+        Width="1080" Height="720"
+        MinWidth="800" MinHeight="500"
+        WindowStartupLocation="CenterOwner">
+
+    <Grid ColumnDefinitions="*,1,*">
+
+        <!-- ── LEFT: Document Info ───────────────────────────────────────── -->
+        <ScrollViewer Grid.Column="0" Padding="28,24">
+            <StackPanel Spacing="20" x:Name="LeftPanel">
+
+                <!-- Header -->
+                <StackPanel Spacing="4">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Border CornerRadius="5" Padding="8,4" Background="{Binding TypeColor}">
+                            <TextBlock Text="{Binding TypeLabel}" FontSize="13" FontWeight="Bold" Foreground="White"/>
+                        </Border>
+                        <TextBlock Text="{Binding Number}" FontSize="22" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,4,0,0">
+                        <Border CornerRadius="4" Padding="6,2" Background="{Binding StatusColor}">
+                            <TextBlock Text="{Binding StatusLabel}" FontSize="11" Foreground="White"/>
+                        </Border>
+                        <TextBlock Text="{Binding DateFormatted}" FontSize="12" Opacity="0.6" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Movement -->
+                <Border Padding="16,14" CornerRadius="8" Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                    <Grid ColumnDefinitions="*,Auto,*" RowDefinitions="Auto,Auto">
+                        <StackPanel Grid.Column="0" Spacing="3">
+                            <TextBlock Text="FROM" FontSize="10" Opacity="0.5" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding FromLabel}" FontSize="14" FontWeight="Medium" TextWrapping="Wrap"/>
+                        </StackPanel>
+                        <TextBlock Grid.Column="1" Text="→" FontSize="20" VerticalAlignment="Center" Margin="16,0" Opacity="0.5"/>
+                        <StackPanel Grid.Column="2" Spacing="3">
+                            <TextBlock Text="TO" FontSize="10" Opacity="0.5" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding ToLabel}" FontSize="14" FontWeight="Medium" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Details grid -->
+                <Border Padding="16,14" CornerRadius="8" Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Details" FontSize="13" FontWeight="SemiBold" Opacity="0.7"/>
+                        <ItemsControl ItemsSource="{Binding DetailRows}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid ColumnDefinitions="160,*" Margin="0,3">
+                                        <TextBlock Text="{Binding Label}" FontSize="12" Opacity="0.55"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding Value}" FontSize="12" TextWrapping="Wrap"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+                <!-- Lines table -->
+                <StackPanel Spacing="0">
+                    <TextBlock Text="Lines" FontSize="13" FontWeight="SemiBold" Opacity="0.7" Margin="0,0,0,8"/>
+                    <Border CornerRadius="8" Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
+                        <StackPanel>
+                            <Border Padding="12,9" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="0,0,0,1">
+                                <Grid ColumnDefinitions="*,60,75,70,80">
+                                    <TextBlock Text="Product"    FontSize="11" FontWeight="SemiBold" Opacity="0.6"/>
+                                    <TextBlock Grid.Column="1" Text="Qty"     FontSize="11" FontWeight="SemiBold" Opacity="0.6"/>
+                                    <TextBlock Grid.Column="2" Text="Unit Price" FontSize="11" FontWeight="SemiBold" Opacity="0.6"/>
+                                    <TextBlock Grid.Column="3" Text="VAT %"   FontSize="11" FontWeight="SemiBold" Opacity="0.6"/>
+                                    <TextBlock Grid.Column="4" Text="Gross"   FontSize="11" FontWeight="SemiBold" Opacity="0.6" HorizontalAlignment="Right"/>
+                                </Grid>
+                            </Border>
+                            <ItemsControl ItemsSource="{Binding Lines}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Padding="12,10" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}" BorderThickness="0,0,0,1">
+                                            <Grid ColumnDefinitions="*,60,75,70,80">
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding ProductName}" FontSize="12"/>
+                                                    <TextBlock Text="{Binding SKU}" FontSize="10" Opacity="0.45"/>
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="1" Text="{Binding Quantity, StringFormat={}{0:N2}}" FontSize="12" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="2" Text="{Binding UnitPrice,   StringFormat={}{0:N2}}" FontSize="12" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="3" Text="{Binding VatRate,     StringFormat={}{0:N0}%}" FontSize="12" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="4" Text="{Binding GrossAmount, StringFormat={}{0:N2}}" FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Right" FontWeight="Medium"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <!-- Totals -->
+                            <Border Padding="12,10">
+                                <Grid ColumnDefinitions="*,80">
+                                    <StackPanel Spacing="4">
+                                        <Grid ColumnDefinitions="120,80">
+                                            <TextBlock Text="Net Total:"   FontSize="12" Opacity="0.6"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding NetAmount,   StringFormat={}{0:N2}}" FontSize="12"/>
+                                        </Grid>
+                                        <Grid ColumnDefinitions="120,80">
+                                            <TextBlock Text="VAT:"         FontSize="12" Opacity="0.6"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding VatAmount,   StringFormat={}{0:N2}}" FontSize="12"/>
+                                        </Grid>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Spacing="2">
+                                        <TextBlock Text="TOTAL" FontSize="10" Opacity="0.5" HorizontalAlignment="Right"/>
+                                        <TextBlock Text="{Binding GrossAmount, StringFormat={}{0:N2}}" FontSize="18" FontWeight="Bold" HorizontalAlignment="Right"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- Notes -->
+                <Border Padding="16,14" CornerRadius="8"
+                        Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
+                        IsVisible="{Binding HasNotes}">
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="Notes" FontSize="13" FontWeight="SemiBold" Opacity="0.7"/>
+                        <TextBlock Text="{Binding Notes}" FontSize="12" TextWrapping="Wrap" Opacity="0.85"/>
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- ── DIVIDER ───────────────────────────────────────────────────── -->
+        <Border Grid.Column="1" Background="{DynamicResource SystemControlForegroundBaseLowBrush}"/>
+
+        <!-- ── RIGHT: Receipt Preview ────────────────────────────────────── -->
+        <ScrollViewer Grid.Column="2" Padding="28,24" Background="{DynamicResource SystemControlPageBackgroundBaseMediumBrush}">
+            <Border MaxWidth="420" HorizontalAlignment="Center"
+                    Background="White" CornerRadius="4"
+                    Padding="32,28">
+                <StackPanel Spacing="0">
+
+                    <!-- Company header -->
+                    <StackPanel HorizontalAlignment="Center" Spacing="3" Margin="0,0,0,20">
+                        <TextBlock Text="{Binding CompanyName}" FontSize="17" FontWeight="Bold"
+                                   HorizontalAlignment="Center" Foreground="#111"/>
+                        <TextBlock Text="{Binding CompanyAddress}" FontSize="11" Foreground="#555"
+                                   HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
+                        <TextBlock Text="{Binding CompanyTaxLine}" FontSize="11" Foreground="#555"
+                                   HorizontalAlignment="Center"/>
+                    </StackPanel>
+
+                    <!-- Divider -->
+                    <Border Height="1" Background="#DDD" Margin="0,0,0,16"/>
+
+                    <!-- Document title -->
+                    <TextBlock Text="{Binding TypeDescription}" FontSize="14" FontWeight="Bold"
+                               Foreground="#111" HorizontalAlignment="Center" Margin="0,0,0,4"/>
+                    <TextBlock Text="{Binding Number}" FontSize="12" Foreground="#444"
+                               HorizontalAlignment="Center" Margin="0,0,0,16"/>
+
+                    <!-- Meta rows -->
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="5" Margin="0,0,0,16">
+                        <TextBlock Text="Date:"              FontSize="11" Foreground="#666"/>
+                        <TextBlock Grid.Column="1" Text="{Binding DateFormatted}" FontSize="11" Foreground="#333" HorizontalAlignment="Right"/>
+                        <TextBlock Grid.Row="1" Text="Contractor:"    FontSize="11" Foreground="#666"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding ContractorLabel}" FontSize="11" Foreground="#333" HorizontalAlignment="Right" TextWrapping="Wrap" TextAlignment="Right"/>
+                        <TextBlock Grid.Row="2" Text="Warehouse:"     FontSize="11" Foreground="#666"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding WarehouseLabel}" FontSize="11" Foreground="#333" HorizontalAlignment="Right"/>
+                        <TextBlock Grid.Row="3" Text="Ref:"           FontSize="11" Foreground="#666" IsVisible="{Binding HasExternalRef}"/>
+                        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding ExternalRef}" FontSize="11" Foreground="#333" HorizontalAlignment="Right" IsVisible="{Binding HasExternalRef}"/>
+                    </Grid>
+
+                    <!-- Divider -->
+                    <Border Height="1" Background="#DDD" Margin="0,0,0,10"/>
+
+                    <!-- Lines header -->
+                    <Grid ColumnDefinitions="*,44,62,64" Margin="0,0,0,6">
+                        <TextBlock Text="Item"       FontSize="10" FontWeight="Bold" Foreground="#888"/>
+                        <TextBlock Grid.Column="1" Text="Qty"    FontSize="10" FontWeight="Bold" Foreground="#888" HorizontalAlignment="Right"/>
+                        <TextBlock Grid.Column="2" Text="Price"  FontSize="10" FontWeight="Bold" Foreground="#888" HorizontalAlignment="Right"/>
+                        <TextBlock Grid.Column="3" Text="Total"  FontSize="10" FontWeight="Bold" Foreground="#888" HorizontalAlignment="Right"/>
+                    </Grid>
+
+                    <!-- Line items -->
+                    <ItemsControl ItemsSource="{Binding Lines}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="0,0,0,8">
+                                    <Grid ColumnDefinitions="*,44,62,64">
+                                        <TextBlock Text="{Binding ProductName}" FontSize="12" Foreground="#222" TextWrapping="Wrap"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding Quantity, StringFormat={}{0:N2}}" FontSize="12" Foreground="#333" HorizontalAlignment="Right"/>
+                                        <TextBlock Grid.Column="2" Text="{Binding UnitPrice, StringFormat={}{0:N2}}" FontSize="12" Foreground="#333" HorizontalAlignment="Right"/>
+                                        <TextBlock Grid.Column="3" Text="{Binding GrossAmount, StringFormat={}{0:N2}}" FontSize="12" Foreground="#222" FontWeight="Medium" HorizontalAlignment="Right"/>
+                                    </Grid>
+                                    <TextBlock Text="{Binding SKU, StringFormat=SKU: {0}}" FontSize="10" Foreground="#AAA" Margin="0,1,0,0"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <!-- Divider -->
+                    <Border Height="1" Background="#DDD" Margin="0,8,0,10"/>
+
+                    <!-- Totals -->
+                    <Grid ColumnDefinitions="*,80" RowDefinitions="Auto,Auto,Auto" RowSpacing="5">
+                        <TextBlock Text="Net:"    FontSize="12" Foreground="#666"/>
+                        <TextBlock Grid.Column="1" Text="{Binding NetAmount,   StringFormat={}{0:N2}}" FontSize="12" Foreground="#444" HorizontalAlignment="Right"/>
+                        <TextBlock Grid.Row="1" Text="VAT:"     FontSize="12" Foreground="#666"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding VatAmount,   StringFormat={}{0:N2}}" FontSize="12" Foreground="#444" HorizontalAlignment="Right"/>
+                        <TextBlock Grid.Row="2" Text="TOTAL"    FontSize="14" FontWeight="Bold" Foreground="#111"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding GrossAmount, StringFormat={}{0:N2}}" FontSize="14" FontWeight="Bold" Foreground="#111" HorizontalAlignment="Right"/>
+                    </Grid>
+
+                    <!-- Footer note -->
+                    <Border Height="1" Background="#DDD" Margin="0,16,0,12" IsVisible="{Binding HasInvoiceFooter}"/>
+                    <TextBlock Text="{Binding InvoiceFooter}" FontSize="10" Foreground="#888"
+                               TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Center"
+                               IsVisible="{Binding HasInvoiceFooter}"/>
+
+                    <!-- Company contact footer -->
+                    <Border Height="1" Background="#EEE" Margin="0,14,0,10"/>
+                    <TextBlock Text="{Binding CompanyContactLine}" FontSize="10" Foreground="#AAA"
+                               TextAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap"/>
+
+                </StackPanel>
+            </Border>
+        </ScrollViewer>
+
+    </Grid>
+</Window>

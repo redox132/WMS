@@ -1,7 +1,9 @@
+using WMS.Repositories.Base;
 using WMS.Repositories.Customers;
 using WMS.Repositories.Documents;
 using WMS.Repositories.Orders;
 using WMS.Repositories.Products;
+using WMS.Repositories.Settings;
 using WMS.Repositories.Warehouses;
 using WMS.Services.Migrations;
 
@@ -13,11 +15,12 @@ namespace WMS.Services;
 /// </summary>
 public static class AppServices
 {
-    public static IProductRepository   Products   { get; private set; } = null!;
-    public static ICustomerRepository  Customers  { get; private set; } = null!;
-    public static IOrderRepository     Orders     { get; private set; } = null!;
-    public static IDocumentRepository  Documents  { get; private set; } = null!;
-    public static IWarehouseRepository Warehouses { get; private set; } = null!;
+    public static IProductRepository          Products        { get; private set; } = null!;
+    public static ICustomerRepository         Customers       { get; private set; } = null!;
+    public static IOrderRepository            Orders          { get; private set; } = null!;
+    public static IDocumentRepository         Documents       { get; private set; } = null!;
+    public static IWarehouseRepository        Warehouses      { get; private set; } = null!;
+    public static ICompanySettingsRepository  CompanySettings { get; private set; } = null!;
 
     public static void Initialise()
     {
@@ -27,12 +30,14 @@ public static class AppServices
         {
             new Migration001_InitialSchema(),
             new Migration002_SeedData(),
+            new Migration003_CompanySettings(),
         }).RunPending();
 
-        Products   = new ProductRepository(db);
-        Customers  = new CustomerRepository(db);
-        Orders     = new OrderRepository(db);
-        Documents  = new DocumentRepository(db);
-        Warehouses = new WarehouseRepository(db);
+        Products        = new ProductRepository(db);
+        Customers       = new CustomerRepository(db);
+        Orders          = new OrderRepository(db);
+        Documents       = new DocumentRepository(db);
+        Warehouses      = new WarehouseRepository(db);
+        CompanySettings = new CompanySettingsRepository(db);
     }
 }

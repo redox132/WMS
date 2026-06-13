@@ -20,7 +20,7 @@
                 <!-- Name -->
                 <StackPanel Spacing="4">
                     <TextBlock Text="Name *" FontSize="12" Opacity="0.6"/>
-                    <TextBox Text="{Binding Name}" Watermark="Company or person name"/>
+                    <TextBox Text="{Binding Name}" PlaceholderText="Company or person name"/>
                 </StackPanel>
 
                 <!-- Type -->
@@ -33,11 +33,11 @@
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                     <StackPanel Grid.Column="0" Spacing="4">
                         <TextBlock Text="Tax ID (NIP/VAT)" FontSize="12" Opacity="0.6"/>
-                        <TextBox Text="{Binding TaxId}" Watermark="e.g. PL1234567890"/>
+                        <TextBox Text="{Binding TaxId}" PlaceholderText="e.g. PL1234567890"/>
                     </StackPanel>
                     <StackPanel Grid.Column="1" Spacing="4">
                         <TextBlock Text="Email" FontSize="12" Opacity="0.6"/>
-                        <TextBox Text="{Binding Email}" Watermark="contact@example.com"/>
+                        <TextBox Text="{Binding Email}" PlaceholderText="contact@example.com"/>
                     </StackPanel>
                 </Grid>
 
@@ -45,11 +45,11 @@
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                     <StackPanel Grid.Column="0" Spacing="4">
                         <TextBlock Text="Phone" FontSize="12" Opacity="0.6"/>
-                        <TextBox Text="{Binding Phone}" Watermark="+48 ..."/>
+                        <TextBox Text="{Binding Phone}" PlaceholderText="+48 ..."/>
                     </StackPanel>
                     <StackPanel Grid.Column="1" Spacing="4">
                         <TextBlock Text="Contact Person" FontSize="12" Opacity="0.6"/>
-                        <TextBox Text="{Binding ContactPerson}" Watermark="Full name"/>
+                        <TextBox Text="{Binding ContactPerson}" PlaceholderText="Full name"/>
                     </StackPanel>
                 </Grid>
 
@@ -58,21 +58,21 @@
 
                 <StackPanel Spacing="4">
                     <TextBlock Text="Street" FontSize="12" Opacity="0.6"/>
-                    <TextBox Text="{Binding BillingStreet}" Watermark="Street and number"/>
+                    <TextBox Text="{Binding BillingStreet}" PlaceholderText="Street and number"/>
                 </StackPanel>
 
                 <Grid ColumnDefinitions="*,120,80" ColumnSpacing="12">
                     <StackPanel Grid.Column="0" Spacing="4">
                         <TextBlock Text="City" FontSize="12" Opacity="0.6"/>
-                        <TextBox Text="{Binding BillingCity}" Watermark="City"/>
+                        <TextBox Text="{Binding BillingCity}" PlaceholderText="City"/>
                     </StackPanel>
                     <StackPanel Grid.Column="1" Spacing="4">
                         <TextBlock Text="Postal Code" FontSize="12" Opacity="0.6"/>
-                        <TextBox Text="{Binding BillingPostalCode}" Watermark="00-000"/>
+                        <TextBox Text="{Binding BillingPostalCode}" PlaceholderText="00-000"/>
                     </StackPanel>
                     <StackPanel Grid.Column="2" Spacing="4">
                         <TextBlock Text="Country" FontSize="12" Opacity="0.6"/>
-                        <TextBox Text="{Binding BillingCountry}" Watermark="PL"/>
+                        <TextBox Text="{Binding BillingCountry}" PlaceholderText="PL"/>
                     </StackPanel>
                 </Grid>
 
@@ -84,14 +84,14 @@
                     </StackPanel>
                     <StackPanel Grid.Column="1" Spacing="4">
                         <TextBlock Text="Currency" FontSize="12" Opacity="0.6"/>
-                        <TextBox Text="{Binding Currency}" Watermark="PLN"/>
+                        <TextBox Text="{Binding Currency}" PlaceholderText="PLN"/>
                     </StackPanel>
                 </Grid>
 
                 <!-- Notes -->
                 <StackPanel Spacing="4">
                     <TextBlock Text="Notes" FontSize="12" Opacity="0.6"/>
-                    <TextBox Text="{Binding Notes}" Watermark="Optional notes..." Height="60" AcceptsReturn="True"/>
+                    <TextBox Text="{Binding Notes}" PlaceholderText="Optional notes..." Height="60" AcceptsReturn="True"/>
                 </StackPanel>
 
                 <!-- Error -->
