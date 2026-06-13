@@ -39,6 +39,9 @@
             <MenuItem Header="_Settings">
                 <MenuItem Header="Settings"  Command="{Binding NavigateToCommand}" CommandParameter="Settings" />
             </MenuItem>
+            <MenuItem Header="_Help">
+                <MenuItem Header="Check for Updates" Click="CheckForUpdates_Click" />
+            </MenuItem>
         </Menu>
 
         <!-- ── Content Area ─────────────────────────────────────────────────── -->
