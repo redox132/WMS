@@ -1,0 +1,258 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:WMS.ViewModels.Pages"
+             x:Class="WMS.Views.Pages.InsightsPageView"
+             x:DataType="vm:InsightsPageViewModel"
+             x:CompileBindings="False">
+
+    <UserControl.Styles>
+        <Style Selector="Border.KpiCard">
+            <Setter Property="Padding"       Value="20,16"/>
+            <Setter Property="CornerRadius"  Value="10"/>
+            <Setter Property="Background"    Value="{DynamicResource SystemControlBackgroundChromeMediumBrush}"/>
+        </Style>
+        <Style Selector="TextBlock.KpiLabel">
+            <Setter Property="FontSize"  Value="11"/>
+            <Setter Property="Opacity"   Value="0.55"/>
+            <Setter Property="Margin"    Value="0,0,0,4"/>
+        </Style>
+        <Style Selector="TextBlock.KpiValue">
+            <Setter Property="FontSize"   Value="20"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+        <Style Selector="TextBlock.KpiSub">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Opacity"  Value="0.5"/>
+            <Setter Property="Margin"   Value="0,2,0,0"/>
+        </Style>
+        <Style Selector="Border.Panel">
+            <Setter Property="Padding"      Value="20"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Background"   Value="{DynamicResource SystemControlBackgroundChromeMediumBrush}"/>
+        </Style>
+        <Style Selector="TextBlock.ColHeader">
+            <Setter Property="FontSize"   Value="11"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Opacity"    Value="0.5"/>
+        </Style>
+    </UserControl.Styles>
+
+    <ScrollViewer Padding="32,28">
+        <StackPanel Spacing="24">
+
+            <!-- Header -->
+            <StackPanel Spacing="4">
+                <TextBlock Text="Insights" FontSize="28" FontWeight="SemiBold"/>
+                <TextBlock Text="Sales and purchase statistics across all products" Opacity="0.55" FontSize="14"/>
+            </StackPanel>
+
+            <!-- Tabs -->
+            <TabControl>
+
+                <!-- ═══════════════════════════════════════════════════════ SALES -->
+                <TabItem Header="Sales">
+                    <StackPanel Spacing="20" Margin="0,16,0,0">
+
+                        <!-- KPIs -->
+                        <Grid ColumnDefinitions="*,*,*,*" >
+                            <Border Grid.Column="0" Classes="KpiCard" Margin="0,0,12,0">
+                                <StackPanel>
+                                    <TextBlock Classes="KpiLabel" Text="Total Revenue"/>
+                                    <TextBlock Classes="KpiValue" Text="{Binding SalesTotalRevenue, StringFormat={}{0:N2} PLN}"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="1" Classes="KpiCard" Margin="0,0,12,0">
+                                <StackPanel>
+                                    <TextBlock Classes="KpiLabel" Text="Sales Orders"/>
+                                    <TextBlock Classes="KpiValue" Text="{Binding SalesOrderCount}"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="2" Classes="KpiCard" Margin="0,0,12,0">
+                                <StackPanel>
+                                    <TextBlock Classes="KpiLabel" Text="Avg Order Value"/>
+                                    <TextBlock Classes="KpiValue" Text="{Binding SalesAvgOrderValue, StringFormat={}{0:N2} PLN}"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="3" Classes="KpiCard">
+                                <StackPanel>
+                                    <TextBlock Classes="KpiLabel" Text="Best-Selling Product"/>
+                                    <TextBlock Classes="KpiValue" FontSize="13" TextTrimming="CharacterEllipsis"
+                                               Text="{Binding SalesTopProduct}"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <!-- Chart: Top products by revenue -->
+                        <Border Classes="Panel">
+                            <StackPanel Spacing="14">
+                                <TextBlock Text="Top Products by Revenue" FontSize="16" FontWeight="SemiBold"/>
+                                <ItemsControl ItemsSource="{Binding SalesTopProductsChart}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid ColumnDefinitions="200,*,Auto" Margin="0,0,0,8">
+                                                <TextBlock Text="{Binding Label}" FontSize="12"
+                                                           VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                                <Border Grid.Column="1" CornerRadius="3" Height="13"
+                                                        VerticalAlignment="Center" HorizontalAlignment="Left"
+                                                        Width="{Binding BarWidth}" Background="{Binding Color}" Margin="12,0"/>
+                                                <TextBlock Grid.Column="2" FontSize="12" Opacity="0.7"
+                                                           VerticalAlignment="Center"
+                                                           Text="{Binding ValueLabel, StringFormat={}{0} PLN}"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Per-product breakdown table -->
+                        <Border Classes="Panel">
+                            <StackPanel Spacing="12">
+                                <TextBlock Text="Per-Product Breakdown — Sales" FontSize="16" FontWeight="SemiBold"/>
+
+                                <!-- Column headers -->
+                                <Grid ColumnDefinitions="*,120,140,140,80" Margin="0,0,0,4">
+                                    <TextBlock Grid.Column="0" Classes="ColHeader" Text="Product"/>
+                                    <TextBlock Grid.Column="1" Classes="ColHeader" Text="SKU"/>
+                                    <TextBlock Grid.Column="2" Classes="ColHeader" Text="Net Amount" HorizontalAlignment="Right"/>
+                                    <TextBlock Grid.Column="3" Classes="ColHeader" Text="Gross Amount" HorizontalAlignment="Right"/>
+                                    <TextBlock Grid.Column="4" Classes="ColHeader" Text="Qty Sold" HorizontalAlignment="Right"/>
+                                </Grid>
+
+                                <Separator Opacity="0.2"/>
+
+                                <ItemsControl ItemsSource="{Binding SalesPerProduct}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid ColumnDefinitions="*,120,140,140,80" Margin="0,5">
+                                                <TextBlock Grid.Column="0" Text="{Binding ProductName}" FontSize="13"
+                                                           TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding SKU}" FontSize="12"
+                                                           Opacity="0.55" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="2" Text="{Binding NetAmountLabel}" FontSize="13"
+                                                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="3" Text="{Binding GrossAmountLabel}" FontSize="13"
+                                                           FontWeight="SemiBold" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="4" Text="{Binding TotalQtyLabel}" FontSize="13"
+                                                           Opacity="0.7" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <!-- Empty state -->
+                                <TextBlock Text="No sales data available." FontSize="13" Opacity="0.45"
+                                           HorizontalAlignment="Center" Margin="0,16"
+                                           IsVisible="{Binding !SalesPerProduct.Count}"/>
+                            </StackPanel>
+                        </Border>
+
+                    </StackPanel>
+                </TabItem>
+
+                <!-- ══════════════════════════════════════════════════ PURCHASES -->
+                <TabItem Header="Purchases">
+                    <StackPanel Spacing="20" Margin="0,16,0,0">
+
+                        <!-- KPIs -->
+                        <Grid ColumnDefinitions="*,*,*,*">
+                            <Border Grid.Column="0" Classes="KpiCard" Margin="0,0,12,0">
+                                <StackPanel>
+                                    <TextBlock Classes="KpiLabel" Text="Total Cost"/>
+                                    <TextBlock Classes="KpiValue" Text="{Binding PurchaseTotalCost, StringFormat={}{0:N2} PLN}"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="1" Classes="KpiCard" Margin="0,0,12,0">
+                                <StackPanel>
+                                    <TextBlock Classes="KpiLabel" Text="Purchase Orders"/>
+                                    <TextBlock Classes="KpiValue" Text="{Binding PurchaseOrderCount}"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="2" Classes="KpiCard" Margin="0,0,12,0">
+                                <StackPanel>
+                                    <TextBlock Classes="KpiLabel" Text="Avg Order Value"/>
+                                    <TextBlock Classes="KpiValue" Text="{Binding PurchaseAvgOrderValue, StringFormat={}{0:N2} PLN}"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="3" Classes="KpiCard">
+                                <StackPanel>
+                                    <TextBlock Classes="KpiLabel" Text="Most Purchased Product"/>
+                                    <TextBlock Classes="KpiValue" FontSize="13" TextTrimming="CharacterEllipsis"
+                                               Text="{Binding PurchaseTopProduct}"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <!-- Chart: Top products by cost -->
+                        <Border Classes="Panel">
+                            <StackPanel Spacing="14">
+                                <TextBlock Text="Top Products by Cost" FontSize="16" FontWeight="SemiBold"/>
+                                <ItemsControl ItemsSource="{Binding PurchaseTopProductsChart}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid ColumnDefinitions="200,*,Auto" Margin="0,0,0,8">
+                                                <TextBlock Text="{Binding Label}" FontSize="12"
+                                                           VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                                <Border Grid.Column="1" CornerRadius="3" Height="13"
+                                                        VerticalAlignment="Center" HorizontalAlignment="Left"
+                                                        Width="{Binding BarWidth}" Background="{Binding Color}" Margin="12,0"/>
+                                                <TextBlock Grid.Column="2" FontSize="12" Opacity="0.7"
+                                                           VerticalAlignment="Center"
+                                                           Text="{Binding ValueLabel, StringFormat={}{0} PLN}"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Per-product breakdown table -->
+                        <Border Classes="Panel">
+                            <StackPanel Spacing="12">
+                                <TextBlock Text="Per-Product Breakdown — Purchases" FontSize="16" FontWeight="SemiBold"/>
+
+                                <!-- Column headers -->
+                                <Grid ColumnDefinitions="*,120,140,140,80" Margin="0,0,0,4">
+                                    <TextBlock Grid.Column="0" Classes="ColHeader" Text="Product"/>
+                                    <TextBlock Grid.Column="1" Classes="ColHeader" Text="SKU"/>
+                                    <TextBlock Grid.Column="2" Classes="ColHeader" Text="Net Amount" HorizontalAlignment="Right"/>
+                                    <TextBlock Grid.Column="3" Classes="ColHeader" Text="Gross Amount" HorizontalAlignment="Right"/>
+                                    <TextBlock Grid.Column="4" Classes="ColHeader" Text="Qty Bought" HorizontalAlignment="Right"/>
+                                </Grid>
+
+                                <Separator Opacity="0.2"/>
+
+                                <ItemsControl ItemsSource="{Binding PurchasePerProduct}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid ColumnDefinitions="*,120,140,140,80" Margin="0,5">
+                                                <TextBlock Grid.Column="0" Text="{Binding ProductName}" FontSize="13"
+                                                           TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding SKU}" FontSize="12"
+                                                           Opacity="0.55" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="2" Text="{Binding NetAmountLabel}" FontSize="13"
+                                                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="3" Text="{Binding GrossAmountLabel}" FontSize="13"
+                                                           FontWeight="SemiBold" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="4" Text="{Binding TotalQtyLabel}" FontSize="13"
+                                                           Opacity="0.7" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <!-- Empty state -->
+                                <TextBlock Text="No purchase data available." FontSize="13" Opacity="0.45"
+                                           HorizontalAlignment="Center" Margin="0,16"
+                                           IsVisible="{Binding !PurchasePerProduct.Count}"/>
+                            </StackPanel>
+                        </Border>
+
+                    </StackPanel>
+                </TabItem>
+
+            </TabControl>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
